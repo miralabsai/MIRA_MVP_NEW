@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import "./UnlockMira.css";
 
 function Login({ onLogin }) { // Add onLogin prop
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [setErrorMessage] = useState(''); // To store and display error messages
+  const [errorMessage, setErrorMessage] = useState(''); // To store and display error messages
   const clearFields = () => {
     setEmail('');
     setPassword('');
   };
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
@@ -23,14 +24,19 @@ function Login({ onLogin }) { // Add onLogin prop
               password: password
           })
       });
+      console.log('Response:', response);
       const data = await response.json();
+      console.log('Data:', data);
+
+      
       if(response.ok) {
           // Clear the fields
           setEmail('');
           setPassword('');
           // Store the token and navigate the user
           localStorage.setItem('token', data.token);
-          onLogin(); // Call onLogin prop
+          onLogin && onLogin(); // Call onLogin prop if defined
+          navigate('/Dashboard');        
       } else {
           // Handle errors and display an error message
           setErrorMessage(data.detail || 'An error occurred.');
@@ -46,6 +52,7 @@ function Login({ onLogin }) { // Add onLogin prop
           <h3 className="title-up text-center">Login</h3>
         </div>
         <div className="card-body">
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
           <form action="" className="form" method="">
             <div className="field input-group">
               <input
