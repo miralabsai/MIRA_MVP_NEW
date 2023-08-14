@@ -6,6 +6,10 @@ function Login({ onLogin }) { // Add onLogin prop
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [setErrorMessage] = useState(''); // To store and display error messages
+  const clearFields = () => {
+    setEmail('');
+    setPassword('');
+  };
 
   const handleLogin = async () => {
     try {
@@ -21,6 +25,9 @@ function Login({ onLogin }) { // Add onLogin prop
       });
       const data = await response.json();
       if(response.ok) {
+          // Clear the fields
+          setEmail('');
+          setPassword('');
           // Store the token and navigate the user
           localStorage.setItem('token', data.token);
           onLogin(); // Call onLogin prop
@@ -34,7 +41,6 @@ function Login({ onLogin }) { // Add onLogin prop
     }
   };
   return (
-    <div className="container">
       <div className="card card-login">
         <div className="card-header">
           <h3 className="title-up text-center">Login</h3>
@@ -65,10 +71,9 @@ function Login({ onLogin }) { // Add onLogin prop
           <button className="button1" onClick={handleLogin}>
             Login
           </button>
-          <button className="button2">Clear</button>
+          <button className="button2" onClick={clearFields}>Clear</button>
         </div>
         </div>
-      </div>
   );
 }
 export default Login;

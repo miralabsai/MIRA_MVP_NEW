@@ -17,12 +17,20 @@ function SignUp() {
   const [nmlsId, setNmlsId] = useState('');  // Only for Loan Officer
   const [setErrorMessage] = useState(''); // To store and display error messages
 
+  const clearFields = () => {
+    setFirstName('');
+    setLastName('');
+    setUsername('');
+    setPassword('');
+    setConfirmPassword('');
+    setNmlsId('');
+  };
+
   const handleSignUp = async () => {
       if(password !== confirmPassword) {
           setErrorMessage('Passwords do not match.');
           return;
       }
-
       const userData = {
           username: email,  
           password: password,
@@ -31,7 +39,6 @@ function SignUp() {
           confirm_password: confirmPassword,
           role: userType === 'loanOfficer' ? 'Loan Officer' : 'Consumer'
       };
-    
 
       if(userType === 'loanOfficer') {
           userData.nmlsId = nmlsId;  // Add NMLS ID for loan officers
@@ -48,7 +55,14 @@ function SignUp() {
       const data = await response.json();
 
       if(response.ok) {
-          // Navigate the user to login page or any other suitable page
+          // Clear the fields
+          setFirstName('');
+          setLastName('');
+          setUsername('');
+          setPassword('');
+          setConfirmPassword('');
+          setNmlsId('');
+         // Navigate the user to login page or any other suitable page
       } else {
           // Handle errors and display an error message
           setErrorMessage(data.detail || 'An error occurred during registration.');
@@ -127,7 +141,7 @@ function SignUp() {
         </div>
         <div className="card-footer">
           <button className="button1" onClick={handleSignUp}>Get Started</button>
-          <button className="button2">Clear</button> <br />
+          <button className="button2" onClick={clearFields}>Clear</button> <br />
         </div>  
       </div>
     </div>
