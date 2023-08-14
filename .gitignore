@@ -1,0 +1,15 @@
+mira/
+__pycache__/
+*.py[cod]
+*.log
+.vscode
+*.egg-info/
+dist/
+build/
+/frontend/node_modules
+/ai_chat/.env
+/frontend/package-lock.json
+miramvp/
+
+/backend/.gitignore
+/backend/.env

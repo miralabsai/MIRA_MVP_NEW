@@ -1,0 +1,206 @@
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: rgba(254, 253, 253, 0.445);
+}
+
+.close-button:hover {
+  color: #ffffff;
+}
+
+.meet-mira-section  {
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-align: center;
+  color: #ffffff93;
+  transform: translate(-50%, 100%);
+  padding: 40px;
+  font-size: large;
+  transform: translate(-50%, 100%);
+  width: 80%;
+  height: 60%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  border-radius: 10px;
+}
+
+.meet-mira-section.active {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.meet-mira-title {
+  position: absolute;
+  top: 10px;
+  text-align: center; /* Center the text */
+  margin: 20px 0; /* Add some margin to position the title */
+  font-size: 20px; /* Adjust the font size as needed */
+  /* Add any other styling you want for the title */
+}
+
+.mira-magic-section {
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-align: center;
+  color: #ffffff93;
+  transform: translate(-50%, 100%);
+  padding: 40px;
+  font-size: large;
+  width: 80%;
+  height: 60%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  border-radius: 10px;
+}
+
+.mira-magic-title {
+  position: absolute;
+  top: 10px;
+  text-align: center; /* Center the text */
+  margin-bottom: 30px 0; /* Add some margin to position the title */
+  font-size: 20px; /* Adjust the font size as needed */
+  /* Add any other styling you want for the title */
+}
+
+.mira-magic-section.active {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.magic-content h3 {
+  font-weight: bold;
+  margin-top: 20px;
+  
+}
+
+.magic-content ul {
+  list-style-type: disc;
+  text-align: left;
+  display: inline-block;
+  margin: 0 auto; /* Center the ul */
+  padding-left: 20px; /* Adjust the space for bullets */
+}
+
+.magic-content li {
+  margin-bottom: 10px;
+}
+.magic-content p {
+  margin-top: 15px;
+  padding: 20px;
+}
+
+.care-section {
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  height: 60%;
+  text-align: center;
+  color: #ffffff5f;
+  transform: translate(-50%, 100%);
+  overflow-y: auto;
+  font-size: large;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  border-radius: 20px;
+}
+
+.care-section.active {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+
+.care-section h2, .care-section h3 {
+  position: relative;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #ffffff59; /* Adjust the text color */
+  cursor: pointer;
+}
+
+.care-section .accordion {
+  background-color: rgba(241, 241, 241, 0.483); /* Semi-transparent background */
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+  width: 90%;
+  font-size: 15px;
+  border-radius: 15px;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+.care-section .active, .care-section .accordion:hover {
+  background-color: #ccc;
+}
+
+.care-section .panel {
+  padding: 0 15px;
+  background-color: rgba(255, 255, 255, 0.517); /* Semi-transparent background */
+  color: #4a4949; /* Set the text color to black */
+  overflow-y: auto;
+  transition: max-height 0.2s ease-out;
+  width: 90%;
+  max-height: 0; /* Initially hidden */
+  display: block; /* Initially hidden */
+  border-radius: 15px; /* Optional: matching border-radius */
+  align-items: center;
+  margin: auto;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  display: flex;
+  margin-bottom: 10px;
+}
+  
+
+.care-section .accordion, .care-section .panel {
+  text-align: center; /* Center the text inside the buttons and panels */
+  }
+
+.care-section .panel.active {
+  max-height: 500px; /* Adjust as needed to fit content */
+}
+
+.care-section .care-content {
+  overflow-y: auto;
+  width: 90%;
+  height: calc(100% - 80px); /* Adjust according to title and close button */
+  text-align: center;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

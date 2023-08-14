@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+.card-signup {
+    width: 50%; /* Set the width to 50% */
+    margin-top: 10%; /* Increase top and bottom margin to prevent overlap */   
+    margin: 25px 25%; /* Increase top and bottom margin to prevent overlap */ 
+    background-color: #171717;
+    border-radius: 25px;
+    transition: 0.4s ease-in-out;
+    color: #d3d3d3;
+    padding: 5px;
+    overflow-y: auto; /* Enable scrolling if content exceeds the height */
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .card-signup:hover {
+    transform: scale(1.05);
+    border: 1px solid black;
+  }
+  
+  .card-header .nav-tabs-info .active {
+    color: #34b695;
+    border-bottom: 2px solid #34b695;  
+    padding-bottom: 2px; 
+  }
+  
+  .card-body .form {
+    display: flex;
+    flex-direction: column;
+    padding-left: 2em; /* Adjust the left padding */
+    padding-right: 2em; /* Adjust the right padding */
+    padding-bottom: 0.8em;
+    background-color: #171717;
+    border-radius: 25px;
+    padding-top: 10px;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .card-body .input-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Set to 100% to match the container */
+    gap: 1em;
+    border-radius: 15px; /* Adjust the border radius */
+    padding: 0.2em; /* Reduce padding */
+    border: none;
+    outline: none;
+    color: rgb(255, 255, 255);
+    background-color: #171717;
+    box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+    padding: 0.2em; /* Restore the original padding */
+    margin-bottom: 0.05em; /* Add margin below each input group */
+  }
+  
+  .card-body .input-group .input-field {
+    background: none;
+    border: none;
+    outline: none;
+    width: 100%; /* Set to 100% to fill the input group */
+    font-size: 0.9em; /* Reduce font size */
+    color: #d3d3d375;
+  }
+  
+  
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allows items to wrap if space is tight */
+    margin-top: 0.1em;
+  }
+  
+  .card-footer .button1, .card-footer .button2, .card-footer .button3 {
+    border-radius: 15px;
+    border: none;
+    outline: none;
+    transition: .4s ease-in-out;
+    background-color: rgba(255, 255, 255, 0.517); /* Semi-transparent background */
+    color: #4a4949; /* Set the text color to black */
+    flex: 1; /* Will cause them to grow equally */
+    text-align: center;
+    margin: 15px; /* Adds margin around each button */
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+  }
+  
+  .card-footer .button1:hover, .card-footer .button2:hover, .card-footer .button3:hover {
+    background-color: rgba(100, 99, 99, 0.47);
+    color: #ffffffa7;
+    justify-content: space-between;
+  }
+  
+  .card-footer .button3:hover {
+    text-decoration: none; /* Removes underline from the link */
+    display: flex; /* Helps with the margin-bottom */
+    margin-bottom: 1em;
+    justify-content: center; /* Centers the text inside the link */
+  }
+  
+  .login-link .button3 {
+    text-decoration: none; /* Removes underline from the link */
+    display: flex; /* Helps with the margin-bottom */
+    margin-bottom: 1em;
+    justify-content: center; /* Centers the text inside the link */
+    padding-top: 5px;
+    color: #d3d3d3bd;
+  }
+
+  .nav-tabs-info {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Adjust the space between tabs */
+    padding-top: 10px;
+  }
+  
+  .nav-tabs-info .nav-link {
+    background-color: #171717;
+    color: #d3d3d3;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 5px;
+    padding: 0.25em 30px; /* Match padding with footer buttons */
+    border-radius: 15px; /* Match border-radius with footer buttons */
+    transition: .4s ease-in-out; /* Match transition with footer buttons */
+  }
+  
+  .nav-tabs-info .nav-link:hover {
+    background-color: rgba(100, 99, 99, 0.47); /* Match hover background color */
+    color: #ffffffa7; /* Match hover text color */
+}

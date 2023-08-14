@@ -1,0 +1,60 @@
+.typing-effect {
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.2)
+}
+
+.typing-effect span {
+  display: inline-block;
+  width: 0;
+  color: rgba(255, 255, 255, 0.21);
+  animation: typing1 4s steps(40, end) forwards,
+             blink-caret .75s step-end infinite;
+}
+
+.typing-effect:nth-child(2) span {
+  animation: typing2 4s steps(40, end) forwards,
+             blink-caret .75s step-end infinite;
+  animation-delay: 4s;
+}
+
+.typing-effect:nth-child(3) span {
+  animation: typing3 4s steps(40, end) forwards,
+             blink-caret .75s step-end infinite;
+  animation-delay: 2s;
+}
+
+
+/* The typing effects */
+@keyframes typing1 {
+  0% { width: 0 }
+  100% { width: 100% }
+}
+
+@keyframes typing2 {
+  0% { width: 0 }
+  100% { width: 100% }
+}
+
+@keyframes typing3 {
+  0% { width: 0 }
+  100% { width: 100% }
+}
+
+.typing-effect {
+  animation: loopTyping 40s linear infinite; /* 12s = 4s * 3 lines */
+}
+
+/* The looping effect */
+@keyframes loopTyping {
+  0%, 100% {
+    opacity: 1;
+  }
+  33% {
+    opacity: 0;
+  }
+  66% {
+    opacity: 0;
+  }
+}

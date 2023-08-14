@@ -1,0 +1,17 @@
+numpy
+pandas
+PyPDF2
+python-dotenv
+transformers
+sentence-transformers
+huggingface-hub  
+argparse
+langchain
+openai
+gradio
+chainlit
+faiss-cpu
+chainlit
+faiss-cpu
+nltk
+spacy

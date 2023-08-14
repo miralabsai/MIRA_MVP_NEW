@@ -1,0 +1,36 @@
+.care-section h2, .care-section h3 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .care-section .accordion {
+    background-color: #f1f1f1;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+    width: 100%;
+    font-size: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .care-section .active, .care-section .accordion:hover {
+    background-color: #ccc;
+  }
+  
+  .care-section .panel {
+    padding: 0 18px;
+    display: none;
+    background-color: white;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+  
+  .care-section .panel.active {
+    display: block;
+  }
+  
