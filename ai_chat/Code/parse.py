@@ -2,7 +2,7 @@ import os
 import PyPDF2
 import pickle
 
-data_dir = 'Data/Knowledgebase'
+data_dir = 'ai_chat/Data/Knowledgebase'
 
 def extract_text(pdf_file):
     reader = PyPDF2.PdfReader(pdf_file)
@@ -28,7 +28,7 @@ for pdf in pdfs:
         print(f"Error processing {pdf}. Possibly corrupted or invalid PDF.")
         continue
 
-os.makedirs('Extracted_data', exist_ok=True)
-pickle.dump(extracted_texts, open('Extracted_data/extracted.pkl', 'wb'))
+os.makedirs('ai_chat/Extracted_data', exist_ok=True)
+pickle.dump(extracted_texts, open('ai_chat/Extracted_data/extracted.pkl', 'wb'))
 
 print(f"Successfully processed {len(extracted_texts)} out of {len(pdfs)} PDFs and saved the extracted data.")

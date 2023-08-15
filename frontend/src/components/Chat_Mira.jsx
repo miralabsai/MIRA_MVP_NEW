@@ -1,16 +1,27 @@
-import React, { useState } from 'react'; // Import useState
+import React, { useState } from 'react';
+import axios from 'axios'; // Import axios
 import './Dashboard.css';
 
 function Chat_Mira() {
   const [message, setMessage] = useState('');
-  const [chatHistory, setChatHistory] = useState([]); // Initialize chatHistory
+  const [chatHistory, setChatHistory] = useState([]);
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // Prevent default Enter behavior
-      // Logic to send the message to the backend
-      // Add the message to the chat history
+      e.preventDefault();
+      // Add the user message to the chat history
       setChatHistory([...chatHistory, { text: message, user: 'user' }]);
+      try {
+        // Make a POST request to the backend to get the response
+        const response = await axios.post(
+          'http://localhost:8000/converse', // Update this URL to your backend endpoint
+          { query: message }
+        );
+        // Add the AI response to the chat history
+        setChatHistory([...chatHistory, { text: response.data.response, user: 'mira' }]);
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
       setMessage('');
     }
   };
@@ -25,13 +36,13 @@ function Chat_Mira() {
             </div>
           ))}
         </div>
-        <div className="input-wrapper"> {/* Added input-wrapper */}
+        <div className="input-wrapper">
           <textarea
             type="text"
             placeholder="Type your message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleSendMessage} // Added onKeyPress
+            onKeyPress={handleSendMessage}
             className="chat-input"
             rows={1}
           />

@@ -6,7 +6,7 @@ from sentence_transformers import SentenceTransformer
 
 try:
     # Load data
-    with open('Extracted_Data/chunks_ids_and_tokens.pkl', 'rb') as f:
+    with open('ai_chat/Extracted_Data/chunks_ids_and_tokens.pkl', 'rb') as f:
         chunk_ids, chunks, doc_ids, tokens_counts = zip(*pickle.load(f))
 
     # Generate embeddings  
@@ -24,11 +24,11 @@ try:
     index.add(np.array(doc_embeddings))
 
     # Check if the directory exists and create it if necessary
-    if not os.path.exists('Extracted_data'):
-        os.makedirs('Extracted_data')
+    if not os.path.exists('ai_chat/Extracted_data'):
+        os.makedirs('ai_chat/Extracted_data')
 
     # Save the index to a file
-    faiss.write_index(index, 'Extracted_data/faiss_index.bin')
+    faiss.write_index(index, 'ai_chat/Extracted_data/faiss_index.bin')
 
     print(f"{len(doc_ids)} document embeddings saved!")
 except Exception as e:

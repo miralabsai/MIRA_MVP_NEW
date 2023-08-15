@@ -18,7 +18,7 @@ API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = API_KEY
 
 # Load the data from the JSON file
-with open("DATA/Prompt_Eg/prompt_examples.json", "r") as file:
+with open("ai_chat/DATA/Prompt_Eg/prompt_examples.json", "r") as file:
     MORTGAGE_INTENTS = json.load(file)
 
 

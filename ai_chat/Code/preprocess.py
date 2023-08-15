@@ -12,7 +12,7 @@ def split_text(text, chunk_size=1000, overlap_size=100):
 
 def main():
     # Load extracted texts 
-    with open(os.path.join('Extracted_Data', 'extracted.pkl'), 'rb') as f:
+    with open(os.path.join('ai_chat/Extracted_Data', 'extracted.pkl'), 'rb') as f:
         extracted_texts = pickle.load(f)
 
     print(f"Loaded {len(extracted_texts)} extracted texts")
@@ -52,11 +52,11 @@ def main():
     chunks_ids_and_tokens = list(zip(chunk_ids, chunks, doc_ids, tokens_counts))
 
     # Save the list in a single pickle file
-    with open(os.path.join('Extracted_data', 'chunks_ids_and_tokens.pkl'), 'wb') as f:
+    with open(os.path.join('ai_chat/Extracted_data', 'chunks_ids_and_tokens.pkl'), 'wb') as f:
         pickle.dump(chunks_ids_and_tokens, f)
 
     # Save the chunks in a separate pickle file
-    with open(os.path.join('Extracted_data', 'chunks.pkl'), 'wb') as f:
+    with open(os.path.join('ai_chat/Extracted_data', 'chunks.pkl'), 'wb') as f:
         pickle.dump(chunks, f)
 
     print("Preprocessed data pickled")

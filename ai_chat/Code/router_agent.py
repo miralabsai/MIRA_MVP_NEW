@@ -80,12 +80,12 @@ if __name__ == "__main__":
     responses = {}
 
     queries = [
-        "Can you explain the concept of down payment assistance and share appreciation in mortgage lending?",
-        "Can I use a 5/1 ARM mortgage on an investment property",
-        "What is the difference between FHA loans and Conventional Loans",
         "What documents do I need to apply for a mortgage?",
         "Should I take out a 15 or 30 year mortgage?",
-        "What documents are required for refinancing my home?"
+        "What documents are required for refinancing my home?",
+        "Can you explain the concept of down payment assistance and share appreciation in mortgage lending?",
+        "Can I use a 5/1 ARM mortgage on an investment property",
+        "What is the difference between FHA loans and Conventional Loans"
     ]
 
     for query in queries:

@@ -4,8 +4,8 @@ import pickle
 from sentence_transformers import SentenceTransformer
 
 # Load constants
-INDEX_PATH = 'Extracted_data/faiss_index.bin'  
-CHUNKS_PATH = 'Extracted_Data/chunks.pkl'  # Ensure this file contains the chunks
+INDEX_PATH = 'ai_chat/Extracted_data/faiss_index.bin'  
+CHUNKS_PATH = 'ai_chat/Extracted_Data/chunks.pkl'  # Ensure this file contains the chunks
 
 # Load index
 index = faiss.read_index(INDEX_PATH)
