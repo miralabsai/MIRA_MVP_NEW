@@ -1,6 +1,8 @@
 .chat-container {
     display: flex;
     background: black;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     justify-content: center; /* Center content */
     height: 100vh;
     color: white;
@@ -100,7 +102,7 @@
 /* Chat Bubbles */
 .chat-bubble {
   padding: 10px;
-  margin: 5px;
+  margin: 15px;
   font-style: bold;
   max-width: 100%;
   border-radius: 15px;
@@ -127,23 +129,32 @@
   width: 100%;
   height: calc(100vh - 1px);
   align-items: center;
+  transition: all 500ms ease;
 }
 
 /* Chat Input */
 .chat-input {
   flex-grow: 1; /* Added */
-  padding: 7px;
+
   border-radius: 25px;
   color: #000000c1;
+  padding: 10px;
+  margin: 5px;
   background: #ffffff5f;
   outline: none;
   width: 70%;
-  resize: vertical;
+  resize: none;
   box-sizing: border-box;
   height: auto;
-  min-height: 20px; /* Set a max height */
   word-wrap: break-word; /* Enable word wrapping */
+  line-height: normal;
 }
+
+.chat-input::placeholder {
+  color: #ffffff88; /* Or any other color that fits your theme */
+  opacity: 1; /* Firefox */
+}
+
 /* Send Button */
 .send-button {
   background-color: #2d2d2dc4;
