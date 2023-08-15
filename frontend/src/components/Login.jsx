@@ -36,7 +36,7 @@ function Login({ onLogin }) { // Add onLogin prop
           // Store the token and navigate the user
           localStorage.setItem('token', data.token);
           onLogin && onLogin(); // Call onLogin prop if defined
-          navigate('/Dashboard');        
+          navigate('/Dashboard/chat-ui');        
       } else {
           // Handle errors and display an error message
           setErrorMessage(data.detail || 'An error occurred.');

@@ -1,6 +1,6 @@
 // Desc: Sign Up page for the application
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
  // Make sure to include this line if Bootstrap is not globally imported in your project
 import "./UnlockMira.css";
 
@@ -16,6 +16,7 @@ function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nmlsId, setNmlsId] = useState('');  // Only for Loan Officer
   const [setErrorMessage] = useState(''); // To store and display error messages
+  const navigate = useNavigate();
 
   const clearFields = () => {
     setFirstName('');
@@ -63,6 +64,7 @@ function SignUp() {
           setConfirmPassword('');
           setNmlsId('');
          // Navigate the user to login page or any other suitable page
+         navigate('/Dashboard/chat-ui');
       } else {
           // Handle errors and display an error message
           setErrorMessage(data.detail || 'An error occurred during registration.');

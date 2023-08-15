@@ -1,27 +1,31 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // Import axios
+import { DotWave } from '@uiball/loaders'; // Import DotWave loader
 import './Dashboard.css';
 
 function Chat_Mira() {
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSendMessage = async (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       // Add the user message to the chat history
-      setChatHistory([...chatHistory, { text: message, user: 'user' }]);
+      setChatHistory((prevChatHistory) => [...prevChatHistory, { text: message, user: 'user' }]);
+      setIsLoading(true); // Start loading animation
       try {
         // Make a POST request to the backend to get the response
         const response = await axios.post(
-          'http://localhost:8000/converse', // Update this URL to your backend endpoint
+          'http://localhost:8001/converse', // Update this URL to your backend endpoint
           { query: message }
         );
         // Add the AI response to the chat history
-        setChatHistory([...chatHistory, { text: response.data.response, user: 'mira' }]);
+        setChatHistory((prevChatHistory) => [...prevChatHistory, { text: response.data.response, user: 'mira' }]);
       } catch (error) {
         console.error('Error sending message:', error);
       }
+      setIsLoading(false); // Stop loading
       setMessage('');
     }
   };
@@ -35,6 +39,7 @@ function Chat_Mira() {
               {msg.text}
             </div>
           ))}
+          {isLoading && <DotWave size={24} speed={1} color="black" />} {/* Render loader if isLoading is true */}
         </div>
         <div className="input-wrapper">
           <textarea

@@ -107,15 +107,19 @@
   max-width: 100%;
   border-radius: 15px;
   background-color: #ffffff33;
-  color: #090909d0;
+  color: #ffffffdc;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .chat-bubble.user {
   align-self: center;
+  padding: 10px;
+  margin: 15px;
   max-width: 100%;
   background-color: #ffffff75;
+  color: #000000c1;
   justify-content: center;
   align-items: center;
 }
