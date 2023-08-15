@@ -3,6 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from router_agent import RouterAgent
 import os
 from dotenv import load_dotenv
+from pydantic import BaseModel
+from logger import setup_logger  # Import the logger setup function
+
+# Set up the logger
+logger = setup_logger('main_logger', 'main.log')
 
 # Load environment variables
 load_dotenv()
@@ -13,7 +18,7 @@ app = FastAPI()
 # Set up CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173/dashboard/chat-ui"],  # Change this to your front-end domain in production
+    allow_origins=["http://localhost:5173"],  # Change this to your front-end domain in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,9 +31,14 @@ def generate_response(message, history=[]):
     try:
         response = router.route(message)  # Directly route message through RouterAgent
     except Exception as e:
-        print(f"Error generating response: {str(e)}")
+        logger.error(f"Error generating response: {str(e)}")  # Log the error
         response = "Sorry, something went wrong. Please try again later."
     return response
+
+logger.info(f"Current working directory: {os.getcwd()}")  # Log the current directory
+
+class ConverseRequest(BaseModel):
+    query: str
 
 @app.post("/converse")
 async def converse(query: str):

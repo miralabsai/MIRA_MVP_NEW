@@ -1,6 +1,17 @@
 import os
 import pickle
 import re
+from logger import setup_logger  # Import the logger setup function
+
+# Define the log directory relative to the project root
+log_directory = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
+log_file_path = os.path.join(log_directory, 'preprocess_logger.log')
+
+# Ensure the directory exists
+os.makedirs(log_directory, exist_ok=True)
+
+# Set up the logger
+logger = setup_logger('preprocess_logger', log_file_path)
 
 def clean_text(text):
     text = text.lower()
@@ -15,19 +26,19 @@ def main():
     with open(os.path.join('ai_chat/Extracted_Data', 'extracted.pkl'), 'rb') as f:
         extracted_texts = pickle.load(f)
 
-    print(f"Loaded {len(extracted_texts)} extracted texts")
-    print(f"Sample extracted text (first 100 characters): {extracted_texts[0][:100]}...")
+    logger.info(f"Loaded {len(extracted_texts)} extracted texts")
+    logger.info(f"Sample extracted text (first 100 characters): {extracted_texts[0][:100]}...")
 
     # Print some additional samples from the extracted texts
-    print(f"Sample extracted text (500-600 characters): {extracted_texts[0][500:600]}...")
-    print(f"Sample extracted text (last 100 characters): {extracted_texts[0][-100:]}...")
+    logger.info(f"Sample extracted text (500-600 characters): {extracted_texts[0][500:600]}...")
+    logger.info(f"Sample extracted text (last 100 characters): {extracted_texts[0][-100:]}...")
 
     # Clean texts
     cleaned_texts = [clean_text(text) for text in extracted_texts]
 
-    print(f"Sample cleaned text (first 100 characters): {cleaned_texts[0][:100]}...")
-    print(f"Sample cleaned text (500-600 characters): {cleaned_texts[0][500:600]}...")
-    print(f"Sample cleaned text (last 100 characters): {cleaned_texts[0][-100:]}...")
+    logger.info(f"Sample cleaned text (first 100 characters): {cleaned_texts[0][:100]}...")
+    logger.info(f"Sample cleaned text (500-600 characters): {cleaned_texts[0][500:600]}...")
+    logger.info(f"Sample cleaned text (last 100 characters): {cleaned_texts[0][-100:]}...")
 
     # Split cleaned texts into chunks
     chunks = []
@@ -43,10 +54,10 @@ def main():
             chunk_ids.append(global_chunk_id)
             global_chunk_id += 1
 
-    print(f"Generated {len(chunks)} chunks")
-    print(f"Sample chunk (first 100 characters): {chunks[0][:100]}...")
-    print(f"Sample chunk (500-600 characters): {chunks[0][500:600]}...")
-    print(f"Sample chunk's token count: {tokens_counts[0]}")
+    logger.info(f"Generated {len(chunks)} chunks")
+    logger.info(f"Sample chunk (first 100 characters): {chunks[0][:100]}...")
+    logger.info(f"Sample chunk (500-600 characters): {chunks[0][500:600]}...")
+    logger.info(f"Sample chunk's token count: {tokens_counts[0]}")
 
     # Create a list of tuples (chunk_id, chunk, doc_id, tokens_count)
     chunks_ids_and_tokens = list(zip(chunk_ids, chunks, doc_ids, tokens_counts))

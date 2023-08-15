@@ -1,6 +1,17 @@
 import os
 import PyPDF2
 import pickle
+from logger import setup_logger  # Import the logger setup function
+
+# Define the log directory relative to the project root
+log_directory = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
+log_file_path = os.path.join(log_directory, 'extract_logger.log')
+
+# Ensure the directory exists
+os.makedirs(log_directory, exist_ok=True)
+
+# Set up the logger
+logger = setup_logger('extract_logger', log_file_path)
 
 data_dir = 'ai_chat/Data/Knowledgebase'
 
@@ -23,12 +34,12 @@ for pdf in pdfs:
         with open(pdf_path, 'rb') as f:
             text = extract_text(f)
             extracted_texts.append(text)
-        print(f"Processed {pdf}")
+        logger.info(f"Processed {pdf}")  # Log informational message
     except PyPDF2.errors.PdfReadError:
-        print(f"Error processing {pdf}. Possibly corrupted or invalid PDF.")
+        logger.error(f"Error processing {pdf}. Possibly corrupted or invalid PDF.")  # Log error
         continue
 
 os.makedirs('ai_chat/Extracted_data', exist_ok=True)
 pickle.dump(extracted_texts, open('ai_chat/Extracted_data/extracted.pkl', 'wb'))
 
-print(f"Successfully processed {len(extracted_texts)} out of {len(pdfs)} PDFs and saved the extracted data.")
+logger.info(f"Successfully processed {len(extracted_texts)} out of {len(pdfs)} PDFs and saved the extracted data.")  # Log informational message

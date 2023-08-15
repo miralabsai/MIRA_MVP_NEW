@@ -9,18 +9,30 @@ import json
 import os
 import openai
 import dotenv
+from logger import setup_logger
 
+# Define the log directory relative to the project root
+log_directory = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
+log_file_path = os.path.join(log_directory, 'nlu_logger.log')
+
+# Ensure the directory exists
+os.makedirs(log_directory, exist_ok=True)
+
+# Set up the logger
+logger = setup_logger('nlu_logger', log_file_path)
 
 dotenv.load_dotenv()
+
+logger.info("Initializing OpenAI with API key...")
+logger.info("Loading data from prompt_examples.json...")
 
 # Initialize OpenAI
 API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = API_KEY
 
 # Load the data from the JSON file
-with open("ai_chat/DATA/Prompt_Eg/prompt_examples.json", "r") as file:
+with open("../Data/Prompt_Eg/prompt_examples.json", "r") as file:
     MORTGAGE_INTENTS = json.load(file)
-
 
 # Create a list to store examples in the desired format
 examples_list = []
