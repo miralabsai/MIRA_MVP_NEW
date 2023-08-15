@@ -1,0 +1,84 @@
+
+/* Chat Interface */
+.chat-interface {
+  background: rgba(255, 255, 255, 0.233);
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  border-radius: 5px;
+  display: flex; /* Added */
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Chat History */
+.chat-history {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow: auto;
+  padding: 50px 30px;
+  padding: 1px;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  z-index: 2;
+}
+
+/* Chat Bubbles */
+.chat-bubble {
+  padding: 10px;
+  margin: 5px;
+  max-width: 70%;
+  border-radius: 15px;
+  background-color: #ffffff33;
+  color: #ffffffc1;
+  z-index: 2;
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background-color: #ffffff66;
+}
+
+/* Chat Input Container */
+.chat-input-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  padding: 0px;
+  background: #ffffff40;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  justify-content: space-between;
+}
+
+/* Chat Input */
+.chat-input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 0px solid #ffffff44;
+  border-color: #ffffff44;
+  border-radius: 5px;
+  margin: 80px 80px;
+  color: #ffffffc1;
+  background: #ffffff5f;
+  outline: none;
+}
+
+/* Send Button */
+.send-button {
+  background-color: #ffffff33;
+  color: #ffffffc1;
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 500ms ease; /* Matched transition speed */
+  margin-left: auto;
+}
+
+
+.send-button:hover {
+  background-color: #ffffff66;
+}

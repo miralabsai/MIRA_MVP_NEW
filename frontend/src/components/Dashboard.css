@@ -1,16 +1,17 @@
 .chat-container {
     display: flex;
     background: black;
+    justify-content: center; /* Center content */
     height: 100vh;
     color: white;
   }
-  
+
   .sidebar {
     width: 19%;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    padding: 15px;
+    padding: 0px;
     color: #ffffff5f;
     display: flex; /* Added */
     flex-direction: column; /* Added */
@@ -29,7 +30,10 @@
   }
   
   .main-content {
-    width: 81%;
+    width: 81%; /* Adjusted to occupy the remaining space */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
   .menu-item {
@@ -49,16 +53,6 @@
     border-radius: 30px; /* Adding rounded corners on hover */
     padding: 15px;
     transition: all 1000ms ease;
-  }
-
-  
-  .chat-interface {
-    background: rgba(255, 255, 255, 0.233);
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(10px);
-    border-radius: 5px;
-    /* Add other styles for chat interface */
   }
   
   .profile-signup-section {
@@ -90,3 +84,93 @@
     width: 20px;
     margin-right: 5px;
   }
+
+/* Chat History */
+.chat-history {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 auto;
+  background: transparent;
+  padding: 20px 0; /* Added top and bottom padding */
+  margin-bottom: 20px;
+  margin-right: 1%;
+  width: 70%;
+}
+
+/* Chat Bubbles */
+.chat-bubble {
+  padding: 10px;
+  margin: 5px;
+  font-style: bold;
+  max-width: 100%;
+  border-radius: 15px;
+  background-color: #ffffff33;
+  color: #090909d0;
+  justify-content: center;
+  align-items: center;
+}
+
+.chat-bubble.user {
+  align-self: center;
+  max-width: 100%;
+  background-color: #ffffff75;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Chat Input Container */
+.chat-input-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #ffffff40;
+  width: 100%;
+  height: calc(100vh - 1px);
+  align-items: center;
+}
+
+/* Chat Input */
+.chat-input {
+  flex-grow: 1; /* Added */
+  padding: 7px;
+  border-radius: 25px;
+  color: #000000c1;
+  background: #ffffff5f;
+  outline: none;
+  width: 70%;
+  resize: vertical;
+  box-sizing: border-box;
+  height: auto;
+  min-height: 20px; /* Set a max height */
+  word-wrap: break-word; /* Enable word wrapping */
+}
+/* Send Button */
+.send-button {
+  background-color: #2d2d2dc4;
+  color: #ffffffa4;
+  padding: 5px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 25px;
+  transition: all 500ms ease;
+  margin-left: 10px; /* Added */
+}
+
+.send-button:hover {
+  background: #0f0f0f33;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: #000;
+}
+
+/* Input Wrapper */
+.input-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  background: #ffffff40;
+  overflow-wrap: break-word; /* Wrap text */
+}
+
