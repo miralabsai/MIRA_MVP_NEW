@@ -1,7 +1,6 @@
 // Desc: Sign Up page for the application
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
- // Make sure to include this line if Bootstrap is not globally imported in your project
 import "./UnlockMira.css";
 
 function SignUp() {
@@ -15,9 +14,8 @@ function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nmlsId, setNmlsId] = useState('');  // Only for Loan Officer
-  const [setErrorMessage] = useState(''); // To store and display error messages
+  const [errorMessage, setErrorMessage] = useState(''); // To store and display error messages
   const navigate = useNavigate();
-
   const clearFields = () => {
     setFirstName('');
     setLastName('');

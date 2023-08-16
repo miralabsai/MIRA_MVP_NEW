@@ -10,7 +10,10 @@ from datetime import timedelta
 from ..db.user_db import DatabaseManager
 from dotenv import load_dotenv
 import os
+from google.oauth2 import id_token
+from google.auth.transport import requests
 from logger import get_logger
+
 
 load_dotenv()
 
@@ -19,6 +22,7 @@ logger = get_logger(__name__)
 API_KEY = os.getenv('AIRTABLE_API_KEY')
 BASE_ID = os.getenv('AIRTABLE_BASE_ID')
 TABLE_NAME = os.getenv('AIRTABLE_TABLE_NAME')
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')  # Load this from your environment variables
 
 router = APIRouter()
 db_manager = DatabaseManager(BASE_ID, API_KEY, TABLE_NAME)
