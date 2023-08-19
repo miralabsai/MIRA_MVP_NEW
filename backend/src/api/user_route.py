@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from ..db.user_db import DatabaseManager
-from ..models.user_models import UserIn, UserOut, RegisterUser
+from ..models.user_models import UserIn, UserOut, RegisterUser, UserUpdate
 from ..utils.auth import get_current_user, get_current_user_role, get_token
 from ..utils.auth_service import AuthService
 from ..models.roles import UserRole
@@ -29,7 +29,7 @@ def get_user(username: str):
     log.debug("Retrieving user with username:%s", username)
     return db_manager.get_user(username=username)
 
-@router.put("/users/update/{record_id}")
+@router.patch("/users/update/{record_id}") # Change to PATCH
 def update_user(record_id: str, user_data: dict):
     log.debug("Updating user with record_id:%s", record_id)
     return db_manager.update_user(record_id, user_data)
@@ -72,6 +72,14 @@ async def read_users_me(current_user: str = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="User not found")
     return {"username": user["Username"], "email": user["Email"]}  # Adjust as per your UserOut model
 
+@router.patch("/users/update/{record_id}") # Change to PATCH
+def update_user(record_id: str, user_data: dict):
+    log.debug("Updating user with record_id:%s, data: %s", record_id, user_data) # Log the entire data
+    user_data = user_data.dict(by_alias=True, exclude_none=True)  # Convert the Pydantic model to a dict
+    response = db_manager.update_user(record_id, user_data)
+    log.debug("Update response: %s", response) # Log the update response
+    return response
+    
 @router.get("/admin/dashboard/")
 async def admin_dashboard(current_user_role: UserRole = Depends(get_current_user_role)):
     if current_user_role not in [UserRole.ADMIN, UserRole.SUPER_ADMIN]:

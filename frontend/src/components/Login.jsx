@@ -34,7 +34,7 @@ function Login({ onLogin }) { // Add onLogin prop
           setEmail('');
           setPassword('');
           // Store the token and navigate the user
-          localStorage.setItem('token', data.token);
+          localStorage.setItem('token', data.access_token);
           onLogin && onLogin(); // Call onLogin prop if defined
           navigate('/Dashboard/chat-ui');        
       } else {

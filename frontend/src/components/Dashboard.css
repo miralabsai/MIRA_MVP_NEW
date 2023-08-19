@@ -42,10 +42,10 @@
     text-decoration: none;
     color: #ffffffc1;
     display: block;
-    padding: 20px;
-    margin: 5px 0;
+    padding: 15px;
+    margin: 2px 0;
     background: transparent;
-    
+    cursor: pointer;
   }
 
   .menu-item:hover {
@@ -54,7 +54,8 @@
     -webkit-backdrop-filter: blur(10px);
     border-radius: 30px; /* Adding rounded corners on hover */
     padding: 15px;
-    transition: all 1000ms ease;
+    transition: all 600ms ease;
+    cursor: pointer;
   }
   
   .profile-signup-section {
@@ -72,7 +73,7 @@
     padding: 10px;
     border: none;
     cursor: pointer;
-    transition: all 1000ms ease;
+    transition: all 600ms ease;
     text-align: left;
   }
   
@@ -106,8 +107,8 @@
   font-style: bold;
   max-width: 100%;
   border-radius: 15px;
-  background-color: #ffffff33;
-  color: #ffffffdc;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #000000b4;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -129,17 +130,17 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #ffffff40;
+  background: rgba(255, 255, 255, 0.5);
   width: 100%;
   height: calc(100vh - 1px);
   align-items: center;
   transition: all 500ms ease;
+  outline: none;
 }
 
 /* Chat Input */
 .chat-input {
   flex-grow: 1; /* Added */
-
   border-radius: 25px;
   color: #000000c1;
   padding: 10px;
@@ -152,11 +153,20 @@
   height: auto;
   word-wrap: break-word; /* Enable word wrapping */
   line-height: normal;
+  outline: none;
+}
+
+.chat-input:hover {
+  background: #fffffffd;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: #000;
 }
 
 .chat-input::placeholder {
   color: #ffffff88; /* Or any other color that fits your theme */
   opacity: 1; /* Firefox */
+  outline: none;
 }
 
 /* Send Button */

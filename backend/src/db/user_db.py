@@ -44,7 +44,9 @@ class DatabaseManager:
 
     def update_user(self, record_id, data):
         """Update user details."""
-        response = requests.patch(f"{self.base_url}/{record_id}", headers=self.headers, json={"fields": data})
+        logging.debug("Updating user with record_id: %s, data: %s", record_id, data) # Log the record ID and data
+        response = requests.patch(f"{self.base_url}", headers=self.headers, json=data)
+        
         if response.status_code != 200:
             print("Error updating user:", response.text)  # This will print the error message from Airtable
         response.raise_for_status()

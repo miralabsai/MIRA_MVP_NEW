@@ -1,0 +1,94 @@
+.profile-container {
+    opacity: 1;
+    position: fixed;
+    top: 49%;
+    bottom: 11%;
+    left: 0.5%;
+    right: 81.5%;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px 20px 0 0;
+    padding: 10px;
+    transform: translateY(-50%, 100%);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    z-index: 10;
+    font-size: small;
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .profile-container.active {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  /* Additional styling for other elements inside the container */
+  .profile-container label,
+  .profile-container span {
+    margin-right: 25px;
+    display: block;
+    padding: 2px;
+  }
+  
+  .profile-container button {
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: #ffffff;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    margin: auto;
+    margin-top: 20px;
+  }
+
+  .profile-container input {
+    margin-top: 10px;
+    justify-content: center;
+    border-radius: 20px;
+    background-color: #ffffff56;
+    width: 80%;
+    outline: none;
+    padding: 2px;
+    color: #000000;
+  }
+  
+  .profile-container input:hover {
+    background-color: #ffffff;
+    outline: none;
+  }
+
+  .avatar-placeholder {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.500);
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    margin-bottom: 20px;
+  }
+  
+  .profile-container .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: rgba(254, 253, 253, 0.445);
+    margin: auto;
+  }
+  
+  .close-button:hover {
+    color: #ffffff;
+  }

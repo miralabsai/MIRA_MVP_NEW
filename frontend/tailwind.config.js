@@ -35,8 +35,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        poppins: ["Poppins", "sans-serif"],
+        'openSans': ['Open Sans', 'sans-serif'],
       },
+      
     },
     screens: {
       xs: "480px",
