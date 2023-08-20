@@ -35,7 +35,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        'openSans': ['Open Sans', 'sans-serif'],
+        'Oxygen': ['Oxygen', 'sans-serif'],
       },
       
     },

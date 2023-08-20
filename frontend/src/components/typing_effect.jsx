@@ -11,7 +11,7 @@ const TypingEffect = () => {
   const [charIndex, setCharIndex] = useState(0);
 
   useEffect(() => {
-    if (charIndex < texts[lineIndex].length) {
+    if (lineIndex < texts.length && charIndex < texts[lineIndex].length) {
       const timeout = setTimeout(() => {
         setLines((prevLines) => {
           const newLines = [...prevLines];

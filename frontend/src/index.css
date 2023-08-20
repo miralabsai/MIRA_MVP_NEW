@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap');
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
@@ -12,6 +12,11 @@
   );
   --card-shadow: 0px 20px 100px -10px rgba(66, 71, 91, 0.1);
 }
+
+body {
+  font-family: 'Oxygen', sans-serif;
+}
+
 
 * {
   scroll-behavior: smooth;
@@ -139,3 +144,84 @@
   background: rgba(255, 255, 255, 0.6);
   filter: blur(750px);
 }
+
+/* General styles */
+body {
+  font-family: 'Oxygen', sans-serif; /* Assuming Oxygen is the global font */
+}
+
+/* Box Width */
+.boxWidth {
+  max-width: 100%;
+}
+
+@media (min-width: 1700px) {
+  .boxWidth {
+    max-width: 1280px;
+  }
+}
+
+/* Heading 2 */
+.heading2 {
+  font-family: 'Oxygen', sans-serif;
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 66.8px;
+  color: white;
+  width: 100%;
+}
+
+@media (min-width: 480px) {
+  .heading2 {
+    font-size: 48px;
+    line-height: 76.8px;
+  }
+}
+
+/* Paragraph */
+.paragraph {
+  font-family: 'Oxygen', sans-serif;
+  font-weight: normal;
+  color: dimGray; /* Adjust as needed */
+  font-size: 18px;
+  line-height: 30.8px;
+}
+
+/* Flex Center and Start */
+.flexCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flexStart {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Padding and Margin (example for sm breakpoint) */
+@media (min-width: 768px) {
+  .paddingX {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .paddingY {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .padding {
+    padding: 12px 16px;
+  }
+  .marginX {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  .marginY {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+/* Add more styles as needed */
+

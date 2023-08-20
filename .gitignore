@@ -13,3 +13,5 @@ miramvp/
 
 /backend/.gitignore
 /backend/.env
+
+/node_modules
