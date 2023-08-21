@@ -25,33 +25,34 @@ function SignUp() {
     setNmlsId('');
   };
 
-  const handleSignUp = async () => {
-      if(password !== confirmPassword) {
-          setErrorMessage('Passwords do not match.');
-          return;
-      }
-      const userData = {
-          username: email,  
-          password: password,
-          first_name: firstName,
-          last_name: lastName,
-          confirm_password: confirmPassword,
-          role: userType === 'loanOfficer' ? 'Loan Officer' : 'Consumer'
-      };
-
-      if(userType === 'loanOfficer') {
-          userData.nmlsId = nmlsId;  // Add NMLS ID for loan officers
-      }
-
-      const response = await fetch("http://localhost:8000/register/", {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userData)
-      });
-
-      const data = await response.json();
+  const handleSignUp = async (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    if(password !== confirmPassword) {
+      setErrorMessage('Passwords do not match.');
+      return;
+    }
+    const userData = {
+      username: email,  
+      password: password,
+      first_name: firstName,
+      last_name: lastName,
+      confirm_password: confirmPassword,
+      role: userType === 'loanOfficer' ? 'Loan Officer' : 'Consumer'
+    };
+  
+    if(userType === 'loanOfficer') {
+      userData.nmlsId = nmlsId;  // Add NMLS ID for loan officers
+    }
+  
+    const response = await fetch("http://localhost:8000/register/", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData)
+    });
+  
+    const data = await response.json();
 
       if(response.ok) {
           // Clear the fields
@@ -63,23 +64,34 @@ function SignUp() {
           setNmlsId('');
          // Navigate the user to login page or any other suitable page
          navigate('/Dashboard/chat-ui');
-      } else {
-          // Handle errors and display an error message
-          setErrorMessage(data.detail || 'An error occurred during registration.');
-      }
-  }
-  return (
-    <div className="container">
-      <div className="card card-signup">
-        <div className="card-header">
-          <nav className="nav-tabs-info justify-content-center">
-            <button onClick={() => setUserType('user')} className={`nav-link ${userType === 'user' ? 'active' : ''}`}>User Login</button>
-            <button onClick={() => setUserType('loanOfficer')} className={`nav-link ${userType === 'loanOfficer' ? 'active' : ''}`}>Loan Officer Login</button>
-          </nav>
-        </div>
-        <div className="card-body">
-        <form action="" className="form" method="">
-            <h3 id="heading" className="title-up text-center">Sign Up</h3>
+
+         const { access_token } = data;
+         if (access_token) {
+           sessionStorage.setItem('token', access_token);
+         }
+     
+         // Clear the fields
+         clearFields();
+     
+         // Navigate the user to the dashboard page or any other suitable page
+         navigate('/Dashboard/chat-ui');
+       } else {
+         // Handle errors and display an error message
+         setErrorMessage(data.detail || 'An error occurred during registration.');
+       }
+     }
+     return (
+      <div className="container">
+        <div className="card card-signup">
+          <div className="card-header">
+            <nav className="nav-tabs-info justify-content-center">
+              <button onClick={() => setUserType('user')} className={`nav-link ${userType === 'user' ? 'active' : ''}`}>User Login</button>
+              <button onClick={() => setUserType('loanOfficer')} className={`nav-link ${userType === 'loanOfficer' ? 'active' : ''}`}>Loan Officer Login</button>
+            </nav>
+          </div>
+          <form action="" className="form" onSubmit={handleSignUp}>
+            <div className="card-body">
+              <h3 id="heading" className="title-up text-center">Sign Up</h3>
             <div className="field input-group">
               <input
                 className="input-field"
@@ -136,13 +148,12 @@ function SignUp() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
-          </form>
-
-        </div>
-        <div className="card-footer">
-          <button className="button1" onClick={handleSignUp}>Get Started</button>
-          <button className="button2" onClick={clearFields}>Clear</button> <br />
-        </div>  
+          </div>
+          <div className="card-footer">
+            <button className="button1" type="submit">Get Started</button>
+            <button className="button2" type="button" onClick={clearFields}>Clear</button> <br />
+          </div>
+        </form>
       </div>
     </div>
   );

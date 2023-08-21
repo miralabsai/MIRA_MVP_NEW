@@ -75,26 +75,28 @@
     padding-bottom: 0.8em;
     background-color: #171717;
     border-radius: 25px;
-    padding-top: 10px;
-    gap: 10px;
+    gap: 20px;
     width: 100%;
+    justify-content: center;
+    align-items: center;
   }
   
   .card-body .input-group {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%; /* Set to 100% to match the container */
-    gap: 1em;
+    width: 90%; /* Set to 100% to match the container */
+    gap: 2em;
     border-radius: 15px; /* Adjust the border radius */
-    padding: 0.2em; /* Reduce padding */
+    padding: 0.1em; /* Reduce padding */
     border: none;
     outline: none;
     color: rgb(255, 255, 255);
     background-color: #171717;
     box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
-    padding: 0.2em; /* Restore the original padding */
-    margin-bottom: 0.05em; /* Add margin below each input group */
+    padding: 0.1em; /* Restore the original padding */
+    margin-bottom: 0.5em; /* Add margin below each input group */
+    margin: auto;
   }
   
   .card-body .input-group .input-field {
@@ -104,6 +106,12 @@
     width: 100%; /* Set to 100% to fill the input group */
     font-size: 0.9em; /* Reduce font size */
     color: #d3d3d375;
+    padding: 0.5em 0.5em; /* Restore the original padding */
+    margin: 0.2rem; /* Restore the original margin */
+    justify-content: center;
+    align-items: center;
+    gap: 2em;
+
   }
   
   
@@ -128,6 +136,7 @@
     justify-content: space-between;
     align-items: center;
     font-size: 0.9em;
+    padding: 0.25em 30px; /* Match padding with nav-link */
   }
   
   .card-footer .button1:hover, .card-footer .button2:hover, .card-footer .button3:hover {

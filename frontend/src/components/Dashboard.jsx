@@ -13,6 +13,12 @@ function DashBoardPage() {
     setProfileActive(!isProfileActive); // Toggle the profile active state
   };
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('token'); // Clear the token from session storage
+    localStorage.removeItem('token');   // Clear the token from local storage
+    navigate('/'); // Navigate to the landing page or login page
+  };
+  
   return (
     <div className="chat-container">
       <div className="sidebar">
@@ -39,7 +45,7 @@ function DashBoardPage() {
           <button className="profile-button" onClick={handleProfileClick}>
             Profile
           </button>
-          <button className="signup-button">Logout</button>
+          <button className="signup-button" onClick={handleLogout}>Logout</button> {/* Added onClick handler */}
         </div>
       </div>
       <div className="main-content">
