@@ -4,16 +4,10 @@ import numpy as np
 import faiss
 from sentence_transformers import SentenceTransformer
 from logger import setup_logger
-
-# Define the log directory relative to the project root
-log_directory = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
-log_file_path = os.path.join(log_directory, 'vector_store_logger.log')
-
-# Ensure the directory exists
-os.makedirs(log_directory, exist_ok=True)
+import logging
 
 # Set up the logger
-logger = setup_logger('vector_store_logger', log_file_path)
+logger = setup_logger('vector_store', level=logging.INFO)
 
 try:
     # Load data

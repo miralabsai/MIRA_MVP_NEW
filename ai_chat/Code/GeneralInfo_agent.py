@@ -2,6 +2,11 @@
 
 from retriever import retrieve 
 from chain import run_chain
+from logger import setup_logger
+import logging
+
+# Set up the logger
+logger = setup_logger('general_info_agent', level=logging.INFO)
 
 class GeneralInfoAgent:
 

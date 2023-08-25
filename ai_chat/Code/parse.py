@@ -2,16 +2,10 @@ import os
 import PyPDF2
 import pickle
 from logger import setup_logger  # Import the logger setup function
-
-# Define the log directory relative to the project root
-log_directory = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
-log_file_path = os.path.join(log_directory, 'extract_logger.log')
-
-# Ensure the directory exists
-os.makedirs(log_directory, exist_ok=True)
+import logging  # Import the logging module
 
 # Set up the logger
-logger = setup_logger('extract_logger', log_file_path)
+logger = setup_logger('parse', level=logging.INFO)
 
 data_dir = 'ai_chat/Data/Knowledgebase'
 

@@ -10,16 +10,10 @@ import os
 import openai
 import dotenv
 from logger import setup_logger
+import logging  # Added import for logging
 
-# Define the log directory relative to the project root
-log_directory = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
-log_file_path = os.path.join(log_directory, 'nlu_logger.log')
-
-# Ensure the directory exists
-os.makedirs(log_directory, exist_ok=True)
-
-# Set up the logger
-logger = setup_logger('nlu_logger', log_file_path)
+# Set up the logger with the correct level
+logger = setup_logger('nlu_logger', level=logging.INFO)
 
 dotenv.load_dotenv()
 
@@ -29,10 +23,12 @@ logger.info("Loading data from prompt_examples.json...")
 # Initialize OpenAI
 API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = API_KEY
+logger.info("OpenAI initialized with API key.")
 
 # Load the data from the JSON file
 with open("../Data/Prompt_Eg/prompt_examples.json", "r") as file:
     MORTGAGE_INTENTS = json.load(file)
+logger.info("Data loaded from prompt_examples.json.")
 
 # Create a list to store examples in the desired format
 examples_list = []
@@ -95,6 +91,7 @@ def calculate_confidence(input_query, output):
     
     # Overall confidence
     confidence = 0.5 * primary_intent_confidence + 0.40 * semantic_confidence + 0.10 * entity_confidence
+    logger.info(f"Calculated confidence for query '{input_query}': {confidence}.")
     return confidence
 
 
@@ -135,6 +132,7 @@ class CustomOutputParser(AgentOutputParser):
                 input_query = line.split("Question:")[1].strip()
 
         confidence = calculate_confidence(input_query, llm_output)  # Pass both input_query and llm_output
+        logger.info(f"Primary Intent: {primary_intent}, Secondary Intent: {secondary_intent}, Entities: {entities}, Confidence: {confidence}.")
 
         return AgentFinish(
             return_values={
@@ -186,7 +184,7 @@ def extract_from_response(output: str):
         elif "Entities:" in line:
             entities = line.split("Entities:")[1].strip().split(",")
             extracted_data["entities"] = [entity.strip() for entity in entities]
-
+    logger.info(f"Extracted primary intent: {extracted_data['primary_intent']}, secondary intent: {extracted_data['secondary_intent']}, entities: {extracted_data['entities']}.")
     return extracted_data
 
 def test_agent():

@@ -1,4 +1,9 @@
 # prompt.py
+from logger import setup_logger
+import logging
+
+# Setup logger
+logger = setup_logger('prompt', logging.INFO)
 
 NEW_SYSTEM_PROMPT = """  
 MIRA is an AI assistant specialized in mortgage lending information. MIRA only has expertise related to mortgages and cannot assist with other topics.
@@ -45,4 +50,6 @@ def generate_prompt(hits, query):
     # Combine NEW_SYSTEM_PROMPT + hits_string + user_prompt
     full_prompt = NEW_SYSTEM_PROMPT + hits_string + user_prompt
   
+    logger.info(f"Generated prompt for query: {query}")  # Logging the event
+
     return full_prompt

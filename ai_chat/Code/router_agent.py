@@ -2,6 +2,12 @@ from nlu_agent import agent_executor, extract_from_response, calculate_confidenc
 from GeneralInfo_agent import GeneralInfoAgent
 from database_prep import DatabaseManager  # Import DatabaseManager
 import os
+import logging
+from logger import setup_logger
+
+# Set up the logger
+logger = setup_logger('router_agent', level=logging.INFO)
+
 
 # Load environment variables
 API_KEY = os.getenv("AIRTABLE_API_KEY")
@@ -11,27 +17,33 @@ TABLE_NAME = os.getenv("AIRTABLE_TABLE_NAME")
 # Specialist Agents
 class EligibilityPrequalAgent:
     def process(self, input, entities):
+        logger.info("Processing with EligibilityPrequalAgent...")
         return "Assessment regarding eligibility and prequalification."
 
 class DocsAgent:
     def process(self, input, entities):
+        logger.info("Processing with DocsAgent...")
         return "Information about document submission."
 
 class FollowUpAgent:
     def process(self, input, entities):
+        logger.info("Processing with FollowUpAgent...")
         return "Follow-up details."
 
 class ApplicationAgent:
     def process(self, input, entities):
+        logger.info("Processing with ApplicationAgent...")
         return "Guidance on mortgage application."
 
 class DocumentAgent:
     def process(self, input, entities):
+        logger.info("Processing with DocumentAgent...")
         return "Handling document collection and processing."
 
 # Router Agent
 class RouterAgent:
     def __init__(self):
+        logger.info("Initializing RouterAgent and associated specialist agents...")
         self.agents = {
             'general_info': GeneralInfoAgent(),
             'eligibility': EligibilityPrequalAgent(),
@@ -43,6 +55,7 @@ class RouterAgent:
         self.db_manager = DatabaseManager(BASE_ID, API_KEY, TABLE_NAME)  # Initialize DatabaseManager
 
     def route(self, input):
+        logger.info(f"Routing input query: {input}")
         # Fetching intent, entities, and confidence score from nlu_agent.py
         raw_response = agent_executor.run({"input": input, "agent_scratchpad": ""})
         parsed_response = extract_from_response(raw_response)
@@ -51,10 +64,14 @@ class RouterAgent:
         secondary_intents = parsed_response['secondary_intent']
         entities = parsed_response['entities']
         confidence_score = calculate_confidence(input, raw_response)
+        logger.info(f"Primary Intents: {primary_intents}, Secondary Intents: {secondary_intents}, Confidence Score: {confidence_score}")
+        
 
         agent_key = self.get_agent_based_on_intent(primary_intents)
         agent = self.agents.get(agent_key, GeneralInfoAgent())
+        logger.info(f"Selected agent: {agent_key}")
         response = agent.process(input, entities)
+        logger.info(f"Generated response: {response}")
 
         # Store data in the database with placeholders for session_id and updated intent storage
         self.db_manager.insert_interaction(
@@ -71,6 +88,7 @@ class RouterAgent:
         return response
 
     def get_agent_based_on_intent(self, intent):
+        logger.info(f"Selecting agent based on intent: {intent}")
         # This logic determines which agent the query goes to based on the intent
         return intent  # Return the intent as key to fetch the agent. Adjust if the logic changes.
 

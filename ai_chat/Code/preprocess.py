@@ -2,16 +2,10 @@ import os
 import pickle
 import re
 from logger import setup_logger  # Import the logger setup function
+import logging
 
-# Define the log directory relative to the project root
-log_directory = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
-log_file_path = os.path.join(log_directory, 'preprocess_logger.log')
-
-# Ensure the directory exists
-os.makedirs(log_directory, exist_ok=True)
-
-# Set up the logger
-logger = setup_logger('preprocess_logger', log_file_path)
+# Setup logger
+logger = setup_logger('preprocess', level=logging.INFO)
 
 def clean_text(text):
     text = text.lower()

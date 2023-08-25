@@ -4,18 +4,12 @@ from router_agent import RouterAgent
 import os
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from logger import setup_logger  # Import the logger setup function
+from logger import setup_logger
 import uvicorn
+import logging  # Added import for logging
 
-# Define the log directory relative to the project root
-log_directory = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
-log_file_path = os.path.join(log_directory, 'main_logger.log')
-
-# Ensure the directory exists
-os.makedirs(log_directory, exist_ok=True)
-
-# Set up the logger
-logger = setup_logger('main_logger', log_file_path)
+# Set up the logger with the correct level
+logger = setup_logger('main_logger', level=logging.INFO)
 
 # Load environment variables
 load_dotenv()
@@ -37,7 +31,8 @@ router = RouterAgent()
 
 def generate_response(message, history=[]):
     try:
-        response = router.route(message)  # Directly route message through RouterAgent
+        response = router.route(message)
+        logger.info(f"Generated response: {response}")  # Log the generated response
     except Exception as e:
         logger.error(f"Error generating response: {str(e)}")  # Log the error
         response = "Sorry, something went wrong. Please try again later."
@@ -51,15 +46,10 @@ class ConverseRequest(BaseModel):
 @app.post("/converse")
 async def converse(query: ConverseRequest):  # Note the type change here
     logger.info(f"Received query: {query.query}")  # Log the received query
-    try:
-        response = generate_response(query.query)  # Extracting the query from the request object
-        logger.info(f"Generated response: {response}")  # Log the generated response
-    except Exception as e:
-        logger.error(f"Error processing query: {str(e)}")  # Log any exceptions
-        response = "Sorry, something went wrong. Please try again later."
+    response = generate_response(query.query)  # Extracting the query from the request object
 
     return {"response": response}
 
- # at last, the bottom of the file/module
+# at last, the bottom of the file/module
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8001)
