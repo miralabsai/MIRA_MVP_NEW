@@ -1,0 +1,72 @@
+{
+    "mortgage_info": [
+        {"query": "Tell me about mortgages.", "entities": ["mortgages"], "Specialist Agent": "GeneralInfo"},
+        {"query": "What's a mortgage?", "entities": ["mortgage"], "Specialist Agent": "GeneralInfo"},
+        {"query": "Explain mortgage terms.", "entities": ["mortgage", "terms"], "Specialist Agent": "GeneralInfo"}
+    ],
+    "rate_inquiry": [
+        {"query": "What's the current mortgage rate?", "entities": ["mortgage rate"], "Specialist Agent": "GeneralInfo"},
+        {"query": "Are mortgage rates expected to rise?", "entities": ["mortgage rates", "rise"], "Specialist Agent": "GeneralInfo"},
+        {"query": "How is the interest calculated?", "entities": ["interest", "calculated"], "Specialist Agent": "GeneralInfo"}
+    ],
+    "eligibility": [
+        {"query": "Am I eligible for a mortgage?", "entities": ["eligible", "mortgage"], "Specialist Agent": "Eligibility"},
+        {"query": "Can I get a mortgage with a low credit score?", "entities": ["mortgage", "low credit score"], "Specialist Agent": "Eligibility"},
+        {"query": "Are there any age restrictions for mortgage applicants?", "entities": ["age restrictions", "mortgage applicants"], "Specialist Agent": "Eligibility"}
+    ],
+    "documentation": [
+        {"query": "What documents are required for a mortgage application?", "entities": ["documents", "mortgage application"], "Specialist Agent": "Docs"},
+        {"query": "How recent do my financial statements need to be for the loan process?", "entities": ["recent", "financial statements", "loan process"], "Specialist Agent": "Docs"},
+        {"query": "Do I need to provide past tax returns when applying for a home loan?", "entities": ["provide", "past tax returns", "applying", "home loan"], "Specialist Agent": "Docs"}
+    ],
+    "application_process": [
+        {"query": "How do I apply?", "entities": ["apply"], "Specialist Agent": "App"},
+        {"query": "Is there an online application option?", "entities": ["online application", "option"], "Specialist Agent": "App"},
+        {"query": "How long does the application review take?", "entities": ["application review", "long"], "Specialist Agent": "Followup"}
+    ],
+    "down_payment": [
+        {"query": "How much down payment do I need?", "entities": ["down payment", "need"], "Specialist Agent": "App"},
+        {"query": "What's the minimum down payment?", "entities": ["minimum", "down payment"], "Specialist Agent": "App"},
+        {"query": "Is there a down payment assistance program?", "entities": ["down payment assistance program"], "Specialist Agent": "App"}
+    ],
+    "loan_duration": [
+        {"query": "How long is the loan term?", "entities": ["loan term", "long"], "Specialist Agent": "App"},
+        {"query": "What are the advantages of a shorter loan term?", "entities": ["advantages", "shorter loan term"], "Specialist Agent": "App"},
+        {"query": "Is there a maximum loan duration?", "entities": ["maximum loan duration"], "Specialist Agent": "App"}
+    ],
+    "refinancing": [
+        {"query": "How does refinancing work?", "entities": ["refinancing", "work"], "Specialist Agent": "Eligibility"},
+        {"query": "When is the right time to consider refinancing?", "entities": ["right time", "consider refinancing"], "Specialist Agent": "Eligibility"},
+        {"query": "What are the potential benefits of refinancing?", "entities": ["potential benefits", "refinancing"], "Specialist Agent": "Eligibility"}
+    ],
+    "closing_costs": [
+        {"query": "What are the closing costs?", "entities": ["closing costs"], "Specialist Agent": "Docs"},
+        {"query": "How much are the associated fees?", "entities": ["fees", "much"], "Specialist Agent": "Docs"},
+        {"query": "Can I roll the closing costs into the mortgage?", "entities": ["roll", "closing costs", "mortgage"], "Specialist Agent": "Docs"}
+    ],
+    "preapproval": [
+        {"query": "Can I get pre-approved?", "entities": ["pre-approved", "get"], "Specialist Agent": "Eligibility"},
+        {"query": "What's the pre-approval process?", "entities": ["pre-approval process"], "Specialist Agent": "Eligibility"},
+        {"query": "Does pre-approval guarantee a mortgage?", "entities": ["pre-approval", "guarantee", "mortgage"], "Specialist Agent": "Eligibility"}
+    ],
+    "dual_intent_examples": [
+        {"query": "Tell me about mortgages.", "entities": ["mortgages"], "primary_intent": "mortgage_info", "secondary_intent": "general_info", "Specialist Agent": "GeneralInfo"},
+        {"query": "What types of loans do you offer?", "entities": ["loans", "offer"], "primary_intent": "loan_types", "secondary_intent": "general_info", "Specialist Agent": "GeneralInfo"},
+        {"query": "Can I get a 30-year mortgage?", "entities": ["30-year", "mortgage"], "primary_intent": "loan_duration", "secondary_intent": "eligibility", "Specialist Agent": "Eligibility"},
+        {"query": "What are the closing costs?", "entities": ["closing costs"], "primary_intent": "closing_costs", "secondary_intent": "general_info", "Specialist Agent": "Docs"},
+        {"query": "What are mortgage rates today?", "entities": ["mortgage rates"], "primary_intent": "rate_inquiry", "secondary_intent": "general_info", "Specialist Agent": "GeneralInfo"},
+        {"query": "What documents do I need to apply for a mortgage?", "entities": ["documents", "apply", "mortgage"], "primary_intent": "documentation", "secondary_intent": "eligibility", "Specialist Agent": "Docs"},
+        {"query": "How much money do I need for a down payment?", "entities": ["money", "down payment"], "primary_intent": "down_payment", "secondary_intent": "loan_types", "Specialist Agent": "GeneralInfo"},
+        {"query": "Can I get prequalified for buying a new house?", "entities": ["prequalified", "buying", "new house"], "primary_intent": "preapproval", "secondary_intent": "eligibility", "Specialist Agent": "Eligibility"},
+        {"query": "What are closing costs and how can I save on them?", "entities": ["closing costs", "save"],  "primary_intent": "closing_costs", "secondary_intent": "mortgage_info", "Specialist Agent": "Docs"},
+        {"query": "Should I take out a 15 or 30 year mortgage?", "entities": ["15 year", "30 year", "mortgage"], "primary_intent": "loan_duration", "secondary_intent": "loan_types", "Specialist Agent": "App"},
+        {"query": "How often can you refinance a fixed rate mortgage?", "entities": ["refinance", "fixed rate mortgage"], "primary_intent": "refinancing", "secondary_intent": "loan_types", "Specialist Agent": "Eligibility"},
+        {"query": "What credit score do I need for the best mortgage rates?", "entities": ["credit score", "best mortgage rates"], "primary_intent": "eligibility", "secondary_intent": "rate_inquiry", "Specialist Agent": "Eligibility"},
+        {"query": "How much cash do I need to close on a $300,000 house?", "entities": ["cash", "close", "$300,000 house"], "primary_intent": "down_payment", "secondary_intent": "closing_costs", "Specialist Agent": "GeneralInfo"},
+        {"query": "Can I use a 5/1 ARM mortgage on an investment property?", "entities": ["5/1 ARM mortgage", "investment property"], "primary_intent": "loan_types", "secondary_intent": "eligibility", "Specialist Agent": "Eligibility"},
+        {"query": "How long does it take to get approved for a jumbo loan?", "entities": ["long", "get approved", "jumbo loan"], "primary_intent": "application_process", "secondary_intent": "loan_types", "Specialist Agent": "Followup"},
+        {"query": "Should I pay discount points to lower the interest rate?", "entities": ["pay", "discount points", "lower", "interest rate"], "primary_intent": "rate_inquiry", "secondary_intent": "closing_costs", "Specialist Agent": "Docs"},
+        {"query": "Is my loan application under review?", "entities": ["loan application", "review"], "primary_intent": "application_process", "secondary_intent": "Followup", "Specialist Agent": "Followup"},
+        {"query": "When will my documents be verified?", "entities": ["documents", "verified"], "primary_intent": "documentation", "secondary_intent": "Followup", "Specialist Agent": "Docs"}
+    ]    
+}

@@ -10,7 +10,7 @@ logger = setup_logger('general_info_agent', level=logging.INFO)
 
 class GeneralInfoAgent:
 
-    def process(self, query, entities=None):
+    def func(self, query, entities=None):
         try:
             # Retrieve the most relevant chunks
             hits = retrieve(query, k=2)

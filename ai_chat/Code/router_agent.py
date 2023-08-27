@@ -67,7 +67,7 @@ class RouterAgent:
         logger.info(f"Primary Intents: {primary_intents}, Secondary Intents: {secondary_intents}, Confidence Score: {confidence_score}")
         
 
-        agent_key = self.get_agent_based_on_intent(primary_intents)
+        agent_key = self.get_agent_based_on_intent(primary_intents, secondary_intents, entities)
         agent = self.agents.get(agent_key, GeneralInfoAgent())
         logger.info(f"Selected agent: {agent_key}")
         response = agent.process(input, entities)
@@ -87,10 +87,17 @@ class RouterAgent:
 
         return response
 
-    def get_agent_based_on_intent(self, intent):
-        logger.info(f"Selecting agent based on intent: {intent}")
-        # This logic determines which agent the query goes to based on the intent
-        return intent  # Return the intent as key to fetch the agent. Adjust if the logic changes.
+    def get_agent_based_on_intent(self, primary_intent, secondary_intent=None, entities=None):
+        # If primary_intent is general_info, or entities contain 'general' or 'glossary' etc.
+        if primary_intent == 'general_info' or 'general' in entities or 'glossary' in entities:
+            return 'general_info'
+        
+        # If primary_intent is not identified or is a generic question
+        elif primary_intent is None or primary_intent == 'generic_question':
+            return 'general_info'
+        
+        else:
+            return primary_intent  # Existing logic
 
 # Test section
 if __name__ == "__main__":
