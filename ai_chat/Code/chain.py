@@ -36,3 +36,4 @@ def run_chain(hits, query):
     except Exception as e:
         logger.error(f"Error in running chain: {str(e)}")
         return None
+
