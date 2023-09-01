@@ -5,7 +5,7 @@ from langchain.chat_models import ChatOpenAI
 from retriever import get_highest_similarity_score
 from GeneralInfo_agent import GeneralInfoAgent  # Import GeneralInfoAgent
 from database_prep import DatabaseManager  # Import DatabaseManager
-from typing import List, Union
+from typing import List, Union, Optional
 from langchain.schema import AgentAction, AgentFinish, OutputParserException
 import json
 import os
@@ -51,35 +51,6 @@ followup_agent = Tool(name="Followup Agent", func=followup_process, description=
 app_agent = Tool(name="App Agent", func=app_process, description="Guides through the application process")
 doc_agent = Tool(name="Doc Agent", func=doc_process, description="Handles document submission and review")
 
-# Load the data from the JSON file
-with open("ai_chat/Data/Prompt_Eg/router_prompt_ex.json", "r") as file:
-    MORTGAGE_INTENTS = json.load(file)
-logger.info("Data loaded from router_prompt_ex.json.")
-
-# Create a list to store examples in the desired format
-examples_list = []
-
-# Iterate over each intent in MORTGAGE_INTENTS
-for intent, intent_data_list in MORTGAGE_INTENTS.items():
-    for i, intent_data in enumerate(intent_data_list):
-        example = intent_data['query']
-        entities_list = intent_data.get('entities', [])
-        specialist_agent = intent_data.get('Specialist Agent', 'Not Specified')
-
-        example_str = f"- {intent} Example {i+1}: {example}"
-        
-        # Include entities if available
-        if entities_list:
-            entities_str = ", ".join(entities_list)
-            example_str += f" [Entities: {entities_str}]"
-        
-        # Include Specialist Agent
-        example_str += f" [Specialist Agent: {specialist_agent}]"
-        
-        examples_list.append(example_str)
-
-# Create the updated prompt template with the examples in JSON format
-examples_str = "\n".join(examples_list)
 template = f"""
 Given a mortgage-related user query, identify Primary Intents, Secondary Intents, and Specialist Agent as explained in examples and format the response as follows:
 
@@ -88,55 +59,41 @@ Given a mortgage-related user query, identify Primary Intents, Secondary Intents
 - List entities as comma-separated values after "Entities:".
 - End with "Specialist Agent:" followed by the identified specialist agent best suited to handle the query.
 
-For example: {examples_str}
-
 Question: {{input}}
 {{agent_scratchpad}}"""
 
-def get_known_entities_and_agents():
-    all_entities = []
-    all_agents = set()  # Using a set to automatically remove duplicates
-    for intent_data_list in MORTGAGE_INTENTS.values():
-        for intent_data in intent_data_list:
-            entities_list = intent_data.get('entities', [])
-            specialist_agent = intent_data.get('specialist_agent', None)  # Assuming the key is 'specialist_agent' in JSON
-            all_entities.extend(entities_list)
-            if specialist_agent:
-                all_agents.add(specialist_agent)
-    return set(all_entities), all_agents
-
-
-def calculate_confidence(input_query, output, specialist_agent):
+def calculate_confidence(input_query, output, specialist_agent, log=True):
     parsed_response = extract_from_response(output)
     primary_intent = parsed_response.get('primary_intent', '')
     secondary_intents = parsed_response.get('secondary_intent', [])
     extracted_entities = parsed_response.get('entities', [])
-    specialist_agent = parsed_response.get('Specialist Agent', '')
+    specialist_agent = parsed_response.get('specialist_agent', '')  # Note: Corrected the key to be lowercase
     
     # Intent Confidence
-    primary_intent_confidence = 1.0 if primary_intent in MORTGAGE_INTENTS else 0.0
+    primary_intent_confidence = 1.0 if primary_intent else 0.0  # Trusting the fine-tuned model for accuracy
     
-    # Checking each secondary intent against MORTGAGE_INTENTS
-    secondary_intent_confidence = all(intent in MORTGAGE_INTENTS for intent in secondary_intents)
+    # Secondary Intent Confidence (updated)
+    secondary_intent_confidence = 1.0 if secondary_intents else 0.0  # Trusting the fine-tuned model for accuracy
+    
+    # Get the actual float similarity score instead of boolean
+    similarity_score = get_highest_similarity_score(input_query)  # Assuming this function now returns a float
     
     # Semantic Confidence
-    similarity = get_highest_similarity_score(input_query)
-    semantic_confidence = min(similarity, 1.0)
+    semantic_confidence = similarity_score  # Use the float score directly
     
-    # Entity Confidence
-    known_entities, known_agents = get_known_entities_and_agents()
-    entity_overlap = len(set(extracted_entities) & known_entities)
-    entity_confidence = entity_overlap / len(extracted_entities) if extracted_entities else 1.0
+    # Entity Confidence (updated)
+    entity_confidence = 1.0 if extracted_entities else 0.0  # Trusting the fine-tuned model for entity extraction
     
-    # Specialist Agent Confidence
-    known_entities, known_agents = get_known_entities_and_agents()
+    # Specialist Agent Confidence (updated)
+    known_agents = ["Eligibility", "Docs", "Followup", "App", "DocReview", "GeneralInfo"] # Define known agents
     agent_confidence = 1.0 if specialist_agent in known_agents else 0.0
     
-    # Overall confidence
-    confidence = 0.5 * primary_intent_confidence + 0.30 * semantic_confidence + 0.1 * entity_confidence + 0.1 * agent_confidence
-    logger.info(f"Calculated confidence for query '{input_query}': {confidence}.")
+     # Overall confidence
+    confidence = 0.2 * primary_intent_confidence + 0.3 * semantic_confidence + 0.1 * secondary_intent_confidence + 0.1 * entity_confidence + 0.3 * agent_confidence
+    
+    if log:
+        logger.info(f"Calculated confidence for query '{input_query}': {confidence}.")
     return confidence
-
 
 class CustomPromptTemplate(StringPromptTemplate):
     template: str
@@ -169,17 +126,57 @@ agents = {
     'GeneralInfo': general_info_agent  # Add this line
 }
 
+# RouterAgent Class
+class RouterAgent:
+    def route(self, user_query):
+        response = None  # Initialize response to None or some default value
+        try:
+            output_parser.set_user_query(user_query)  # Set the user_query for CustomOutputParser
+            raw_response = agent_executor.run({"input": user_query, "agent_scratchpad": ""})
+            parsed_response = output_parser.parse(raw_response)  # No need to pass user_query here
+
+            primary_intent = parsed_response.return_values.get('primary_intent', 'Error')
+            secondary_intent = parsed_response.return_values.get('secondary_intent', '')
+            entities = parsed_response.return_values.get('entities', [])
+            specialist_agent = parsed_response.return_values.get('specialist_agent', '')
+
+            confidence = calculate_confidence(user_query, raw_response, specialist_agent, log=True)
+
+            # Make sure selected_agent.func() returns a value
+            selected_agent = agents.get(specialist_agent, general_info_agent)
+            response = selected_agent.func(user_query, entities)
+
+            # Inserting record into DB
+            db_manager.insert_interaction(
+                user_query=user_query,
+                mira_response=response,
+                primary_intents=primary_intent,
+                secondary_intents=','.join(secondary_intent) if isinstance(secondary_intent, list) else secondary_intent,
+                entities=entities,
+                action_taken=specialist_agent,
+                confidence_score=confidence,
+                session_id="N/A"  # Placeholder
+            )
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            # Handle the exception and set response accordingly if needed
+
+        return response, confidence
+    
 # Output Parser
 class CustomOutputParser(AgentOutputParser):
+    user_query: Optional[str] = None  # Specify type hint and set default to None
+
+    def set_user_query(self, user_query):
+        self.user_query = user_query  # Set user_query as an instance variable
+
     def parse(self, llm_output: str) -> Union[AgentAction, AgentFinish]:
         lines = llm_output.split('\n')
-
-        # Initial values
-        primary_intent = ""
-        secondary_intent = None
-        entities = ""
-        specialist_agent = ""
-        input_query = ""
+        parsed_data = extract_from_response(llm_output)
+        primary_intent = parsed_data['primary_intent']
+        secondary_intent = parsed_data['secondary_intent']
+        entities = parsed_data['entities']
+        specialist_agent = parsed_data['specialist_agent']
 
         for line in lines:
             if "Primary Intent:" in line:
@@ -187,36 +184,13 @@ class CustomOutputParser(AgentOutputParser):
             elif "Secondary Intent:" in line:
                 secondary_intent = line.split("Secondary Intent:")[1].strip()
             elif "Entities:" in line:
-                entities = line.split("Entities:")[1].strip()
+                entities = line.split("Entities:")[1].strip().split(", ")
             elif "Specialist Agent:" in line:
                 specialist_agent = line.split("Specialist Agent:")[1].strip()
 
-        # Logging before applying additional agent selection logic
-        logger.info(f"Agent before additional selection: {specialist_agent}")
-        
+        user_query = self.user_query.strip()
         # Calculate confidence
-        confidence = calculate_confidence(input_query, llm_output, specialist_agent)
-
-        # Debugging: Why is GeneralInfo not being selected?
-        if specialist_agent != "GeneralInfo":
-            logger.debug(f"Why not GeneralInfo? Confidence: {confidence}, Specialist Agent: {specialist_agent}, Primary Intent: {primary_intent}")
-
-        # Route to the appropriate specialist agent
-        selected_agent = agents.get(specialist_agent, general_info_agent)  # Assuming GeneralInfoAgent exists
-        response = selected_agent.func(input_query, entities)  # Assuming process is a method in the agents
-        logger.info(f"Agent after additional selection: {specialist_agent}")
-
-        # Inserting record into DB
-        db_manager.insert_interaction(
-            user_query=input_query,
-            mira_response=response,
-            primary_intents=primary_intent,
-            secondary_intents=secondary_intent,
-            entities=entities,
-            action_taken=specialist_agent,
-            confidence_score=confidence,
-            session_id="N/A"  # Placeholder
-        )
+        confidence = calculate_confidence(user_query, llm_output, specialist_agent, log=False)  # use user_query
 
         logger.info(f"Primary Intent: {primary_intent}, Secondary Intent: {secondary_intent}, Entities: {entities}, Specialist Agent: {specialist_agent}, Confidence: {confidence}.")
 
@@ -227,8 +201,7 @@ class CustomOutputParser(AgentOutputParser):
                 "entities": entities,
                 "specialist_agent": specialist_agent,
                 "output": llm_output.strip(),
-                "confidence": confidence,
-                "response": response  # New field
+                "confidence": confidence
             },
             log={"llm_output": llm_output}
         )
@@ -236,7 +209,7 @@ class CustomOutputParser(AgentOutputParser):
 output_parser = CustomOutputParser()
 
 # Set up LLM
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.9)
+llm = ChatOpenAI(model_name="ft:gpt-3.5-turbo-0613:personal::7sczKPwS", temperature=0.9)
 
 # LLM Chain
 llm_chain = LLMChain(llm=llm, prompt=prompt)
@@ -268,56 +241,32 @@ def extract_from_response(output: str):
             extracted_data["primary_intent"] = line.split("Primary Intent:")[1].strip()
         elif "Secondary Intent:" in line:
             # Splitting by comma to extract multiple secondary intents, if present
-            secondary_intents = line.split("Secondary Intent:")[1].strip().split(",")
+            secondary_intents = line.split("Secondary Intent:")[1].strip().split(", ")
             extracted_data["secondary_intent"] = [intent.strip() for intent in secondary_intents]
         elif "Entities:" in line:
-            entities = line.split("Entities:")[1].strip().split(",")
+            entities = line.split("Entities:")[1].strip().split(", ")
             extracted_data["entities"] = [entity.strip() for entity in entities]
         elif "Specialist Agent:" in line:  # New condition
             extracted_data["specialist_agent"] = line.split("Specialist Agent:")[1].strip()
 
-    logger.info(f"Extracted primary intent: {extracted_data['primary_intent']}, secondary intent: {extracted_data['secondary_intent']}, entities: {extracted_data['entities']}, specialist agent: {extracted_data['specialist_agent']}.")
+    #logger.info(f"Extracted primary intent: {extracted_data['primary_intent']}, secondary intent: {extracted_data['secondary_intent']}, entities: {extracted_data['entities']}, specialist agent: {extracted_data['specialist_agent']}.")
     return extracted_data
+
+# Initialize RouterAgent
+router_agent = RouterAgent()
 
 def test_agent():
     sample_queries = [
-    "How do interest rates influence my monthly mortgage payments?",
-    "What documents are required for refinancing my home?",
-    "Can you explain the difference between a fixed-rate and an adjustable-rate mortgage?",
-    "What's the process to apply for a jumbo loan, and what are the eligibility criteria?",
-    "Are there any special programs for first-time homebuyers?"
+        "Are there any special programs for first-time homebuyers?"
     ]
 
     for query in sample_queries:
-        raw_response = agent_executor.run({"input": query, "agent_scratchpad": ""})
-        
-        print(f"Raw Response: {raw_response}\n")
-        
-        parsed_response = extract_from_response(raw_response)
-        primary_intent = parsed_response.get('primary_intent', 'Error')
-        secondary_intent = parsed_response.get('secondary_intent', '')
-        entities = parsed_response.get('entities', [])
-        specialist_agent = parsed_response.get('specialist_agent', '')  # Extracting specialist_agent
-        
-        # Note the change here: providing query, raw_response, and specialist_agent
-        confidence = calculate_confidence(query, raw_response, specialist_agent)  # Passing specialist_agent
-        
+        response, confidence = router_agent.route(query)  # This will internally handle everything
+
+        # Print results
         print(f"Query: {query}")
-        print(f"Primary Intent Identified: {primary_intent}")
-        if secondary_intent:
-            print(f"Secondary Intent Identified: {secondary_intent}")
-        print(f"Entities: {', '.join(entities)}")
-        print(f"Specialist Agent: {specialist_agent}")  # Outputting specialist_agent
-        print(f"Confidence: {confidence}\n")
+        print(f"Response: {response}")
+        print(f"Confidence: {confidence}")
 
 if __name__ == "__main__":
     test_agent()
-
-
-def get_known_entities():
-    all_entities = []
-    for intent_data_list in MORTGAGE_INTENTS.values():
-        for intent_data in intent_data_list:
-            entities_list = intent_data.get('entities', [])
-            all_entities.extend(entities_list)
-    return set(all_entities)

@@ -32,9 +32,6 @@ def run_chain(hits, query):
         # Generate response
         response = generate(hits, query)
 
-        # Log the generated response
-        logger.info(f"Generated response: {response}")
-
         return response
     except Exception as e:
         logger.error(f"Error in running chain: {str(e)}")

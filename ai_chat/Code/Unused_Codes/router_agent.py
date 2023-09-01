@@ -70,7 +70,7 @@ class RouterAgent:
         agent_key = self.get_agent_based_on_intent(primary_intents, secondary_intents, entities)
         agent = self.agents.get(agent_key, GeneralInfoAgent())
         logger.info(f"Selected agent: {agent_key}")
-        response = agent.process(input, entities)
+        response = agent.func(input, entities)
         logger.info(f"Generated response: {response}")
 
         # Store data in the database with placeholders for session_id and updated intent storage
@@ -105,12 +105,7 @@ if __name__ == "__main__":
     responses = {}
 
     queries = [
-        "What documents do I need to apply for a mortgage?",
-        "Should I take out a 15 or 30 year mortgage?",
-        "What documents are required for refinancing my home?",
-        "Can you explain the concept of down payment assistance and share appreciation in mortgage lending?",
-        "Can I use a 5/1 ARM mortgage on an investment property",
-        "What is the difference between FHA loans and Conventional Loans"
+   "Are there any special programs for first-time homebuyers?"
     ]
 
     for query in queries:

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from router_agent import RouterAgent
+from nlu_router import RouterAgent
 import os
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -31,12 +31,12 @@ router = RouterAgent()
 
 def generate_response(message, history=[]):
     try:
-        response = router.route(message)
-        logger.info(f"Generated response: {response}")  # Log the generated response
+        response, confidence = router.route(message)  # This line changes to capture both response and confidence
+        logger.info(f"Generated response: {response}, Confidence: {confidence}")  # Log the generated response and confidence
     except Exception as e:
         logger.error(f"Error generating response: {str(e)}")  # Log the error
         response = "Sorry, something went wrong. Please try again later."
-    return response
+    return response  # This remains the same, but you could also return confidence if needed
 
 logger.info(f"Current working directory: {os.getcwd()}")  # Log the current directory
 

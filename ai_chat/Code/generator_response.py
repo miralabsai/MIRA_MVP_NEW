@@ -20,7 +20,7 @@ logger = setup_logger('generator_response', level=logging.INFO)
 def generate(chunks, query):
     # Generate prompt
     prompt = generate_prompt(chunks, query)
-    logger.info(f"Generated prompt: {prompt}")
+    logger.info(f"Reviewing System Prompt to Generate Response")
 
     try:
         # Generate response using the chat models endpoint

@@ -10,8 +10,8 @@ import logging
 logger = setup_logger('retriever', level=logging.INFO)
 
 # Load constants
-INDEX_PATH = "ai_chat/Extracted_Data/faiss_index.bin"  
-CHUNKS_PATH = "ai_chat/Extracted_Data/chunks.pkl"
+INDEX_PATH = "../Extracted_Data/faiss_index.bin"  
+CHUNKS_PATH = "../Extracted_Data/chunks.pkl"
 
 # Log the paths being used
 logger.info(f"Index path: {INDEX_PATH}")

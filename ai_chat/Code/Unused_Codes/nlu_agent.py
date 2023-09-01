@@ -26,7 +26,7 @@ openai.api_key = API_KEY
 logger.info("OpenAI initialized with API key.")
 
 # Load the data from the JSON file
-with open("ai_chat/Data/Prompt_Eg/prompt_examples.json", "r") as file:
+with open("../Data/Prompt_Eg/prompt_examples.json", "r") as file:
     MORTGAGE_INTENTS = json.load(file)
 logger.info("Data loaded from prompt_examples.json.")
 
@@ -54,9 +54,7 @@ Given a mortgage-related user query, identify Primary Intents, Secondary Intents
 - Start with "Primary Intent:" followed by the identified primary intent.
 - If there is a secondary intent, list it as "Secondary Intent:" followed by the identified secondary intent.
 - List entities as comma-separated values after "Entities:".
-
-For example: {examples_str}
-
+- End with "Question:" followed by the original user query.
 Question: {{input}}
 {{agent_scratchpad}}"""
 
@@ -148,7 +146,7 @@ class CustomOutputParser(AgentOutputParser):
 output_parser = CustomOutputParser()
 
 # Set up LLM
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.9)
+llm = ChatOpenAI(model_name="ft:gpt-3.5-turbo-0613:personal::7sczKPwS", temperature=0.9)
 
 # LLM Chain
 llm_chain = LLMChain(llm=llm, prompt=prompt)
