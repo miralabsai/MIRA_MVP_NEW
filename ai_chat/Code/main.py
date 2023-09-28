@@ -31,12 +31,12 @@ router = RouterAgent()
 
 def generate_response(message, history=[]):
     try:
-        response, confidence = router.route(message)  # This line changes to capture both response and confidence
-        logger.info(f"Generated response: {response}, Confidence: {confidence}")  # Log the generated response and confidence
+        response, confidence, agent_type = router.route(message)  # Unpack all three values
+        logger.info(f"Generated response: {response}, Confidence: {confidence}, Agent Type: {agent_type}")  # Log all values
     except Exception as e:
         logger.error(f"Error generating response: {str(e)}")  # Log the error
         response = "Sorry, something went wrong. Please try again later."
-    return response  # This remains the same, but you could also return confidence if needed
+    return response
 
 logger.info(f"Current working directory: {os.getcwd()}")  # Log the current directory
 

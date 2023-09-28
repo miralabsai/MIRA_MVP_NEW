@@ -1,4 +1,4 @@
-from langchain.agents import Tool, AgentExecutor, LLMSingleActionAgent, AgentOutputParser
+from langchain.agents import Tool, AgentExecutor, LLMSingleActionAgent, AgentOutputParser, AgentType
 from langchain.prompts import StringPromptTemplate
 from langchain import OpenAI, LLMChain
 from langchain.chat_models import ChatOpenAI
@@ -7,7 +7,7 @@ from GeneralInfo_agent import GeneralInfoAgent  # Import GeneralInfoAgent
 from database_prep import DatabaseManager  # Import DatabaseManager
 from typing import List, Union, Optional
 from langchain.schema import AgentAction, AgentFinish, OutputParserException
-import json
+import math
 import os
 import openai
 import dotenv
@@ -38,21 +38,36 @@ def docs_process(query, entities):
 def followup_process(query, entities):
     return "Is there anything else you'd like to know?"
 
-def app_process(query, entities):
+def Application(query, entities):
     return "To apply, please fill out the application form on our website."
 
 def doc_process(query, entities):
     return "Please upload your documents through our secure portal."
 
+def loan_comparison_process(query, entities):
+    return "To compare loans, consider interest rates, terms, and fees."
+
+def amortization_process(query, entities):
+    return "Amortization involves paying off the loan in fixed installments."
+
+def Scenario(query, entities):
+    return "For different scenarios, we offer various mortgage solutions tailored to your needs."
+
+
 # Initialize Tools with Specialist Agent Functions
 eligibility_agent = Tool(name="Eligibility Agent", func=eligibility_process, description="Handles eligibility queries")
 docs_agent = Tool(name="Docs Agent", func=docs_process, description="Handles document queries")
 followup_agent = Tool(name="Followup Agent", func=followup_process, description="Handles follow-up actions")
-app_agent = Tool(name="App Agent", func=app_process, description="Guides through the application process")
+app_agent = Tool(name="App Agent", func=Application, description="Guides through the application process")
 doc_agent = Tool(name="Doc Agent", func=doc_process, description="Handles document submission and review")
+loan_comparison_agent = Tool(name="Loan Comparison Agent", func=loan_comparison_process, description="Handles loan comparison queries")
+amortization_agent = Tool(name="Amortization Agent", func=amortization_process, description="Handles amortization queries")
+scenario_agent = Tool(name="Scenario Agent", func=Scenario, description="Handles different mortgage scenarios")
+
+
 
 template = f"""
-Given a mortgage-related user query, identify Primary Intents, Secondary Intents, and Specialist Agent as explained in examples and format the response as follows:
+Given a mortgage-related user query, identify Primary Intents, Secondary Intents, and Specialist Agent as per the training provided and format the response as follows:
 
 - Start with "Primary Intent:" followed by the identified primary intent.
 - Identify secondary intent, list it as "Secondary Intent:" followed by the identified secondary intent.
@@ -62,38 +77,79 @@ Given a mortgage-related user query, identify Primary Intents, Secondary Intents
 Question: {{input}}
 {{agent_scratchpad}}"""
 
-def calculate_confidence(input_query, output, specialist_agent, log=True):
-    parsed_response = extract_from_response(output)
-    primary_intent = parsed_response.get('primary_intent', '')
-    secondary_intents = parsed_response.get('secondary_intent', [])
-    extracted_entities = parsed_response.get('entities', [])
-    specialist_agent = parsed_response.get('specialist_agent', '')  # Note: Corrected the key to be lowercase
-    
-    # Intent Confidence
-    primary_intent_confidence = 1.0 if primary_intent else 0.0  # Trusting the fine-tuned model for accuracy
-    
-    # Secondary Intent Confidence (updated)
-    secondary_intent_confidence = 1.0 if secondary_intents else 0.0  # Trusting the fine-tuned model for accuracy
-    
-    # Get the actual float similarity score instead of boolean
-    similarity_score = get_highest_similarity_score(input_query)  # Assuming this function now returns a float
-    
-    # Semantic Confidence
-    semantic_confidence = similarity_score  # Use the float score directly
-    
-    # Entity Confidence (updated)
-    entity_confidence = 1.0 if extracted_entities else 0.0  # Trusting the fine-tuned model for entity extraction
-    
-    # Specialist Agent Confidence (updated)
-    known_agents = ["Eligibility", "Docs", "Followup", "App", "DocReview", "GeneralInfo"] # Define known agents
-    agent_confidence = 1.0 if specialist_agent in known_agents else 0.0
-    
-     # Overall confidence
-    confidence = 0.2 * primary_intent_confidence + 0.3 * semantic_confidence + 0.1 * secondary_intent_confidence + 0.1 * entity_confidence + 0.3 * agent_confidence
-    
-    if log:
-        logger.info(f"Calculated confidence for query '{input_query}': {confidence}.")
-    return confidence
+class ConfidenceCalculator:
+    # Constants for component weights
+    PRIMARY_INTENT_WEIGHT = 0.20
+    SECONDARY_INTENT_WEIGHT = 0.15
+    ENTITY_WEIGHT = 0.20
+    AGENT_WEIGHT = 0.20
+    SEMANTIC_WEIGHT = 0.10
+    DOMAIN_SPECIFICITY_WEIGHT = 0.15
+
+    def __init__(self, known_agents):
+        self.known_agents = known_agents
+
+    def calculate_confidence(self, input_query, output, specialist_agent, log=True):
+        parsed_response = extract_from_response(output)
+        primary_intent = parsed_response.get('primary_intent', '')
+        secondary_intents = parsed_response.get('secondary_intent', [])
+        extracted_entities = parsed_response.get('entities', [])
+        
+        # Intent Confidence
+        primary_intent_confidence = self._calculate_intent_confidence(primary_intent)
+        
+        # Secondary Intent Confidence
+        secondary_intent_confidence = self._calculate_intent_confidence(secondary_intents)
+        
+        # Semantic Confidence
+        semantic_confidence = self._calculate_semantic_confidence(input_query)
+        
+        # Entity Confidence
+        entity_confidence = self._calculate_entity_confidence(extracted_entities)
+        
+        # Specialist Agent Confidence
+        agent_confidence = self._calculate_agent_confidence(specialist_agent)
+        
+        # Domain-Specificity Confidence
+        domain_specificity = self._calculate_domain_specificity(input_query)
+        
+        # Overall confidence with new metric
+        confidence = self._calculate_overall_confidence(primary_intent_confidence, semantic_confidence, secondary_intent_confidence, entity_confidence, agent_confidence, domain_specificity)
+        
+        if log:
+            logger.info(f"Individual Components: Semantic: {semantic_confidence}, Primary: {primary_intent_confidence}, Entity: {entity_confidence}")
+            logger.info(f"Confidence components: {semantic_confidence}, {primary_intent_confidence}, {entity_confidence}")
+            logger.info(f"Calculated confidence for query '{input_query}': {confidence}")
+        
+        return confidence
+
+    def _calculate_intent_confidence(self, intent):
+        return 1.0 if intent else 0.0
+
+    def _calculate_semantic_confidence(self, input_query):
+        similarity_score = get_highest_similarity_score(input_query)
+        return similarity_score  # Use the raw score
+
+    def _calculate_entity_confidence(self, entities):
+        return 1.0 if entities else 0.0
+
+    def _calculate_agent_confidence(self, agent):
+        return 1.0 if agent in self.known_agents else 0.0
+
+    def _calculate_domain_specificity(self, input_query):
+        similarity_score = get_highest_similarity_score(input_query)
+        return 1.0 if similarity_score > 0.7 else 0.0
+
+    def _calculate_overall_confidence(self, primary_intent_confidence, semantic_confidence, secondary_intent_confidence, entity_confidence, agent_confidence, domain_specificity):
+        confidence = (self.PRIMARY_INTENT_WEIGHT * primary_intent_confidence +
+                      self.SEMANTIC_WEIGHT * semantic_confidence +
+                      self.SECONDARY_INTENT_WEIGHT * secondary_intent_confidence +
+                      self.ENTITY_WEIGHT * entity_confidence +
+                      self.AGENT_WEIGHT * agent_confidence +
+                      self.DOMAIN_SPECIFICITY_WEIGHT * domain_specificity)
+        
+        # Clip to valid range [0, 1]
+        return max(0.0, min(1.0, confidence))
 
 class CustomPromptTemplate(StringPromptTemplate):
     template: str
@@ -121,15 +177,22 @@ agents = {
     'Eligibility': eligibility_agent,
     'Docs': docs_agent,
     'Followup': followup_agent,
-    'App': app_agent,
+    'Appication': app_agent,
     'DocReview': doc_agent,
-    'GeneralInfo': general_info_agent  # Add this line
+    'GeneralInfo': general_info_agent,  # Add this line
+    'LoanComparison': loan_comparison_agent,
+    'Amortization': amortization_agent,
+    'Scenario': scenario_agent
 }
+
+# Initialize ConfidenceCalculator with known agents
+confidence_calculator = ConfidenceCalculator(known_agents=agents.keys())
 
 # RouterAgent Class
 class RouterAgent:
     def route(self, user_query):
         response = None  # Initialize response to None or some default value
+        confidence = 0.0  # Initialize confidence to a default value
         try:
             output_parser.set_user_query(user_query)  # Set the user_query for CustomOutputParser
             raw_response = agent_executor.run({"input": user_query, "agent_scratchpad": ""})
@@ -140,7 +203,7 @@ class RouterAgent:
             entities = parsed_response.return_values.get('entities', [])
             specialist_agent = parsed_response.return_values.get('specialist_agent', '')
 
-            confidence = calculate_confidence(user_query, raw_response, specialist_agent, log=True)
+            confidence = confidence_calculator.calculate_confidence(user_query, raw_response, specialist_agent, log=True)
 
             # Make sure selected_agent.func() returns a value
             selected_agent = agents.get(specialist_agent, general_info_agent)
@@ -161,7 +224,7 @@ class RouterAgent:
             print(f"An error occurred: {e}")
             # Handle the exception and set response accordingly if needed
 
-        return response, confidence
+        return response, confidence, specialist_agent
     
 # Output Parser
 class CustomOutputParser(AgentOutputParser):
@@ -190,7 +253,7 @@ class CustomOutputParser(AgentOutputParser):
 
         user_query = self.user_query.strip()
         # Calculate confidence
-        confidence = calculate_confidence(user_query, llm_output, specialist_agent, log=False)  # use user_query
+        confidence = confidence_calculator.calculate_confidence(user_query, llm_output, specialist_agent, log=False)  # use user_query
 
         logger.info(f"Primary Intent: {primary_intent}, Secondary Intent: {secondary_intent}, Entities: {entities}, Specialist Agent: {specialist_agent}, Confidence: {confidence}.")
 
@@ -209,7 +272,7 @@ class CustomOutputParser(AgentOutputParser):
 output_parser = CustomOutputParser()
 
 # Set up LLM
-llm = ChatOpenAI(model_name="ft:gpt-3.5-turbo-0613:personal::7sczKPwS", temperature=0.9)
+llm = ChatOpenAI(model_name="ft:gpt-3.5-turbo-0613:personal::7scg7esv", temperature=0.7)
 
 # LLM Chain
 llm_chain = LLMChain(llm=llm, prompt=prompt)
@@ -257,15 +320,21 @@ router_agent = RouterAgent()
 
 def test_agent():
     sample_queries = [
-        "Are there any special programs for first-time homebuyers?"
+        "Can you provide some information about FHA loans?",
+        "What are the documents required to start the pre-approval process?",
+        "How to check if I am eligible for a mortgage",
+        "What is the status of my Loan Application",
+        "How do I submit my documents?",
+        "I have scenario I want to discuss?"
     ]
 
     for query in sample_queries:
-        response, confidence = router_agent.route(query)  # This will internally handle everything
+        response, confidence, specialist_agent = router_agent.route(query)  # This will internally handle everything
 
         # Print results
         print(f"Query: {query}")
         print(f"Response: {response}")
+        print(f"Specialist Agent: {specialist_agent}")
         print(f"Confidence: {confidence}")
 
 if __name__ == "__main__":
