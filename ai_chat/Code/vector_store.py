@@ -34,7 +34,7 @@ try:
         os.makedirs('ai_chat/Extracted_data')
 
     # Save the index to a file
-    faiss.write_index(index, 'ai_chat/Extracted_data/faiss_index.bin')
+    faiss.write_index(index, '../Extracted_data/faiss_index.bin')
 
     logger.info(f"{len(doc_ids)} document embeddings saved!")
 except Exception as e:
