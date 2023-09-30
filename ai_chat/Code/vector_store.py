@@ -1,41 +1,56 @@
 import os
-import pickle
 import numpy as np
+import pandas as pd
 import faiss
+import pickle  # Add this import for pickle
 from sentence_transformers import SentenceTransformer
-from logger import setup_logger
 import logging
 
 # Set up the logger
-logger = setup_logger('vector_store', level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('vector_store')
 
-try:
-    # Load data
-    logger.info("Loading data...")
-    with open('ai_chat/Extracted_Data/chunks_ids_and_tokens.pkl', 'rb') as f:
-        chunk_ids, chunks, doc_ids, tokens_counts = zip(*pickle.load(f))
+def main():
+    try:
+        # Load data
+        logger.info("Loading data...")
+        excel_path = 'ai_chat/Data/Knowledgebase/Merged_Master_Fannie_Freddie_Final.xlsx'
+        df = pd.read_excel(excel_path)
 
-    # Generate embeddings
-    logger.info("Generating embeddings...")
-    embedder = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-    doc_embeddings = embedder.encode(chunks)
+        # Combine all columns into a single text chunk
+        df['all_text'] = df.apply(lambda row: ' '.join(row.dropna().astype(str)), axis=1)
+        chunks = df['all_text'].tolist()
 
-    # Infer the dimension from the generated embeddings
-    dimension = len(doc_embeddings[0])
+        # Generate embeddings
+        logger.info("Generating embeddings...")
+        embedder = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+        doc_embeddings = embedder.encode(chunks)
 
-    # FAISS parameters
-    index = faiss.IndexFlatL2(dimension)  # Use a flat L2 index for simplicity
+        # Infer the dimension from the generated embeddings
+        dimension = len(doc_embeddings[0])
 
-    # Add vectors to FAISS index
-    index.add(np.array(doc_embeddings))
+        # FAISS parameters
+        index = faiss.IndexFlatL2(dimension)  # Use a flat L2 index for simplicity
 
-    # Check if the directory exists and create it if necessary
-    if not os.path.exists('ai_chat/Extracted_data'):
-        os.makedirs('ai_chat/Extracted_data')
+        # Add vectors to FAISS index
+        index.add(np.array(doc_embeddings))
 
-    # Save the index to a file
-    faiss.write_index(index, '../Extracted_data/faiss_index.bin')
+        # Check if the directory exists and create it if necessary
+        output_dir = 'ai_chat/Extracted_data'
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
 
-    logger.info(f"{len(doc_ids)} document embeddings saved!")
-except Exception as e:
-    logger.error(f"Error encountered: {str(e)}")
+        # Save the index to a file
+        faiss.write_index(index, os.path.join(output_dir, 'faiss_index.bin'))
+
+        # Save chunks to a pickle file
+        with open(os.path.join(output_dir, 'chunks.pkl'), 'wb') as f:
+            pickle.dump(chunks, f)
+
+        logger.info(f"{len(chunks)} document embeddings and text chunks saved!")
+
+    except Exception as e:
+        logger.error(f"Error encountered: {str(e)}")
+
+if __name__ == "__main__":
+    main()

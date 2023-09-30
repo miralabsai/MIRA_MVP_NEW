@@ -1,6 +1,6 @@
 # chain.py
 from langchain.chains import LLMChain 
-from langchain import PromptTemplate 
+from langchain.prompts import PromptTemplate 
 from langchain.llms import OpenAI
 from prompt import NEW_SYSTEM_PROMPT
 from generator_response import generate

@@ -1,6 +1,7 @@
 from langchain.agents import Tool, AgentExecutor, LLMSingleActionAgent, AgentOutputParser, AgentType
 from langchain.prompts import StringPromptTemplate
-from langchain import OpenAI, LLMChain
+from langchain.llms import OpenAI
+from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
 from retriever import get_highest_similarity_score
 from GeneralInfo_agent import GeneralInfoAgent  # Import GeneralInfoAgent
@@ -15,7 +16,7 @@ from logger import setup_logger
 import logging  # Added import for logging
 
 # Set up the logger with the correct level
-logger = setup_logger('nlu_logger', level=logging.INFO)
+logger = setup_logger('nlu_logger', level=logging.DEBUG)
 
 dotenv.load_dotenv()
 
@@ -193,19 +194,17 @@ class RouterAgent:
     def route(self, user_query):
         response = None  # Initialize response to None or some default value
         confidence = 0.0  # Initialize confidence to a default value
+        specialist_agent = None  # Initialize specialist_agent to None or some default value
         try:
-            output_parser.set_user_query(user_query)  # Set the user_query for CustomOutputParser
+            output_parser.set_user_query(user_query)
             raw_response = agent_executor.run({"input": user_query, "agent_scratchpad": ""})
-            parsed_response = output_parser.parse(raw_response)  # No need to pass user_query here
-
+            parsed_response = output_parser.parse(raw_response)
             primary_intent = parsed_response.return_values.get('primary_intent', 'Error')
             secondary_intent = parsed_response.return_values.get('secondary_intent', '')
             entities = parsed_response.return_values.get('entities', [])
             specialist_agent = parsed_response.return_values.get('specialist_agent', '')
 
             confidence = confidence_calculator.calculate_confidence(user_query, raw_response, specialist_agent, log=True)
-
-            # Make sure selected_agent.func() returns a value
             selected_agent = agents.get(specialist_agent, general_info_agent)
             response = selected_agent.func(user_query, entities)
 
@@ -221,9 +220,7 @@ class RouterAgent:
                 session_id="N/A"  # Placeholder
             )
         except Exception as e:
-            print(f"An error occurred: {e}")
-            # Handle the exception and set response accordingly if needed
-
+            logger.error(f"Error occurred while routing query '{user_query}': {e}")
         return response, confidence, specialist_agent
     
 # Output Parser
@@ -254,7 +251,6 @@ class CustomOutputParser(AgentOutputParser):
         user_query = self.user_query.strip()
         # Calculate confidence
         confidence = confidence_calculator.calculate_confidence(user_query, llm_output, specialist_agent, log=False)  # use user_query
-
         logger.info(f"Primary Intent: {primary_intent}, Secondary Intent: {secondary_intent}, Entities: {entities}, Specialist Agent: {specialist_agent}, Confidence: {confidence}.")
 
         return AgentFinish(
@@ -266,7 +262,7 @@ class CustomOutputParser(AgentOutputParser):
                 "output": llm_output.strip(),
                 "confidence": confidence
             },
-            log={"llm_output": llm_output}
+            log= llm_output
         )
 
 output_parser = CustomOutputParser()
