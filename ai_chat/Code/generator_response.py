@@ -4,6 +4,7 @@ import openai
 # Assume generate_prompt is imported or defined here
 from logger import setup_logger
 import logging
+from prompt import generate_prompt
 
 # Load environment variables
 load_dotenv()
@@ -19,8 +20,9 @@ else:
 # Set up the logger
 logger = setup_logger('generator_response', level=logging.INFO)
 
-def generate_prompt(chunks, query):
-    # This is a placeholder, replace this with your actual implementation
+def generate(chunks, query):
+    # Validate and generate prompt
+    prompt = generate_prompt(chunks, query)  # Using the imported function
     return "System Prompt: " + ", ".join(chunks) + " Query: " + query
 
 def generate(chunks, query):
@@ -30,7 +32,7 @@ def generate(chunks, query):
         logger.error("Prompt generation failed.")
         return None
     
-    logger.info(f"Generated prompt: {prompt}")
+    logger.info(f"Generated prompt applied NEW_SYSTEM_PROMPT")
     
     try:
         # Generate response using the chat models endpoint
@@ -49,6 +51,10 @@ def generate(chunks, query):
             ]
         )
         
+        # Log the token usage
+        token_count = response['usage']['total_tokens']
+        logger.info(f"Total tokens used: {token_count}")
+        
         # Validate the response format
         if 'choices' in response and 'message' in response['choices'][0] and 'content' in response['choices'][0]['message']:
             response_text = response['choices'][0]['message']['content']
@@ -63,10 +69,4 @@ def generate(chunks, query):
 
     return response_text
 
-# Test cases
-if __name__ == "__main__":
-    test_prompt = generate_prompt(["Chunk1", "Chunk2"], "Test query")
-    print(f"Test prompt: {test_prompt}")
 
-    test_response = generate(["Chunk1", "Chunk2"], "Test query")
-    print(f"Test response: {test_response}")

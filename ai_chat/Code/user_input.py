@@ -1,14 +1,17 @@
 # user_input.py
-from retriever import retrieve, get_highest_similarity_score
+from retriever import retrieve, get_highest_similarity_score, initialize_retriever
 from logger import setup_logger
 import logging
 
 # Set up the logger
 logger = setup_logger('user_input', level=logging.INFO)
 
+# Initialize the retriever to make sure index and embedder are available
+initialize_retriever()
+
 def get_user_input():
     # Define a threshold for similarity. You may need to adjust this based on your data and embeddings.
-    SIMILARITY_THRESHOLD = 0.50  # Example threshold; you might need to adjust this value based on testing
+    SIMILARITY_THRESHOLD = 0.30  # Example threshold; you might need to adjust this value based on testing
     
     while True:
         # Get user input
@@ -17,7 +20,7 @@ def get_user_input():
 
         # Check the highest similarity score for the user input
         similarity_score = get_highest_similarity_score(user_input)
-        logger.debug(f"Similarity score for input: {similarity_score}")
+        logger.info(f"Similarity score for input: {similarity_score}")
 
         if similarity_score >= SIMILARITY_THRESHOLD:
             # Use the retrieve function to get the top 2 most similar chunks
