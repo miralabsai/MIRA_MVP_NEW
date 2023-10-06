@@ -95,7 +95,17 @@ class RouterAgent:
             selected_agent = agents.get(specialist_agent, general_info_agent)
             response = selected_agent.func(user_query, entities)
 
-            # ... (Keeping the database insertion part the same)
+            # Inserting record into DB
+            db_manager.insert_interaction(
+                user_query=user_query,
+                mira_response=response,
+                primary_intents=primary_intent,
+                secondary_intents=','.join(secondary_intent) if isinstance(secondary_intent, list) else secondary_intent,
+                entities=entities,
+                action_taken=specialist_agent,
+                confidence_score=confidence,
+                session_id="N/A"  # Placeholder
+            )
 
         except Exception as e:
             logger.error(f"Error occurred while routing query '{user_query}': {e}")
