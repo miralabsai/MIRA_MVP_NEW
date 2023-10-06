@@ -16,6 +16,5 @@ miramvp/
 
 /node_modules
 
-# .gitignore
-ai_chat/Extracted_Data/Chroma_Db
-ai_chat/Code/ai_chat
+/ai_chat/Extracted_Data
+/ai_chat/Code/ai_chat
