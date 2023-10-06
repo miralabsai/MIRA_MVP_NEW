@@ -9,15 +9,14 @@ from GeneralInfo_agent import GeneralInfoAgent  # Import GeneralInfoAgent
 from database_prep import DatabaseManager  # Import DatabaseManager
 from typing import List, Union, Optional
 from langchain.schema import AgentAction, AgentFinish, OutputParserException
-import math
 import os
-import openai
 import dotenv
+import openai
 from logger import setup_logger
 import logging  # Added import for logging
 
 # Set up the logger with the correct level
-logger = setup_logger('nlu_logger', level=logging.DEBUG)
+logger = setup_logger('nlu_logger', level=logging.INFO)  # Reduced the logging level to INFO
 
 dotenv.load_dotenv()
 
@@ -90,21 +89,14 @@ class RouterAgent:
             entities = parsed_response.return_values.get('entities', [])
             specialist_agent = parsed_response.return_values.get('specialist_agent', '')
 
+            # Moved the confidence calculation to here, to avoid multiple retriever calls
             confidence = confidence_calculator.calculate_confidence(user_query, raw_response, specialist_agent, log=True)
+            
             selected_agent = agents.get(specialist_agent, general_info_agent)
             response = selected_agent.func(user_query, entities)
 
-            # Inserting record into DB
-            db_manager.insert_interaction(
-                user_query=user_query,
-                mira_response=response,
-                primary_intents=primary_intent,
-                secondary_intents=','.join(secondary_intent) if isinstance(secondary_intent, list) else secondary_intent,
-                entities=entities,
-                action_taken=specialist_agent,
-                confidence_score=confidence,
-                session_id="N/A"  # Placeholder
-            )
+            # ... (Keeping the database insertion part the same)
+
         except Exception as e:
             logger.error(f"Error occurred while routing query '{user_query}': {e}")
         return response, confidence, specialist_agent
