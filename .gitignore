@@ -15,3 +15,7 @@ miramvp/
 /backend/.env
 
 /node_modules
+
+# .gitignore
+ai_chat/Extracted_Data/Chroma_Db
+ai_chat/Code/ai_chat
