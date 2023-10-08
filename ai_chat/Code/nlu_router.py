@@ -17,6 +17,8 @@ import logging  # Added import for logging
 
 # Set up the logger with the correct level
 logger = setup_logger('nlu_logger', level=logging.INFO)  # Reduced the logging level to INFO
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 dotenv.load_dotenv()
 
@@ -84,16 +86,28 @@ class RouterAgent:
             output_parser.set_user_query(user_query)
             raw_response = agent_executor.run({"input": user_query, "agent_scratchpad": ""})
             parsed_response = output_parser.parse(raw_response)
-            primary_intent = parsed_response.return_values.get('primary_intent', 'Error')
-            secondary_intent = parsed_response.return_values.get('secondary_intent', '')
+            
+            # Extracted primary and secondary intents and entities
+            primary_intent = parsed_response.return_values.get('primary_intent', [])
+            secondary_intent = parsed_response.return_values.get('secondary_intent', [])
             entities = parsed_response.return_values.get('entities', [])
+            # In RouterAgent class, within route method
+            logger.debug(f"Primary Intent: {primary_intent}, Type: {type(primary_intent)}")
+            logger.debug(f"Secondary Intent: {secondary_intent}, Type: {type(secondary_intent)}")
+            logger.debug(f"Entities: {entities}, Type: {type(entities)}")
+
+            # Combine primary and secondary intents
+            intents = primary_intent + secondary_intent
+            
             specialist_agent = parsed_response.return_values.get('specialist_agent', '')
 
             # Moved the confidence calculation to here, to avoid multiple retriever calls
             confidence = confidence_calculator.calculate_confidence(user_query, raw_response, specialist_agent, log=True)
             
             selected_agent = agents.get(specialist_agent, general_info_agent)
-            response = selected_agent.func(user_query, entities)
+            
+            # Pass intents and entities to the func method of GeneralInfoAgent
+            response = selected_agent.func(user_query, intents, entities)
 
             # Inserting record into DB
             db_manager.insert_interaction(
@@ -110,6 +124,7 @@ class RouterAgent:
         except Exception as e:
             logger.error(f"Error occurred while routing query '{user_query}': {e}")
         return response, confidence, specialist_agent
+
     
 # Output Parser
 class CustomOutputParser(AgentOutputParser):

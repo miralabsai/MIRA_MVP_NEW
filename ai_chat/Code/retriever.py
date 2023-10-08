@@ -8,6 +8,7 @@ import time
 
 # Set up the logger
 logger = setup_logger('retriever', level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 # Initialize Persistent Chroma Client and other global variables only once
 try:
@@ -20,11 +21,34 @@ except Exception as e:
     logger.exception("Error initializing ChromaDB client:")
     raise e
 
-def retrieve(query, k=5, column=None):
+# New retrieve function that accepts intents and entities
+def retrieve_by_intent_and_entities(intents, entities, k=5, column=None):
     try:
+        logger.debug(f"About to call retriever. Intents: {intents}, Type: {type(intents)}")
+        logger.debug(f"About to call retriever. Entities: {entities}, Type: {type(entities)}")
+
+        # Check if entities are an iterable type and if they are empty
+        if not isinstance(entities, (list, tuple, set)):
+            logger.error("Entities should be of iterable types like list, tuple or set.")
+            return []
+
+        # Filter out None or empty strings from entities
+        filtered_entities = list(filter(None, entities))
+
+        # Check if entities are empty
+        if not filtered_entities:
+            logger.warning("Entities are empty.")
+            return []
+
+        # Create the query string based on entities
+        query_string = ' '.join(filtered_entities)
+        
+        logger.debug(f"Generated query string for ChromaDB: {query_string}")
+
         where_filter = {"column": column} if column else None
+
         results = collection.query(
-            query_texts=[query],
+            query_texts=[query_string],
             n_results=k,
             where=where_filter
         )
@@ -34,12 +58,13 @@ def retrieve(query, k=5, column=None):
             return []
 
         combined_strings = [f"{res.get('Cleaned_Description', '')}. {res.get('FAQ_Answers', '')}" for res in results['metadatas'][0]]
-        logger.info(f"Retrieved results for query: {query}")
-
+        logger.info(f"Retrieved results for query: {query_string}")
+        
         return combined_strings
     except Exception as e:
         logger.exception("Error in retrieval:")
         return []
+
 
 def get_highest_similarity_score(query, caller="Unknown"):
     try:
