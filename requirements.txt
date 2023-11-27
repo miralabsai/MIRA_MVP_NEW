@@ -22,8 +22,6 @@ openai
 gradio
 chainlit
 faiss-cpu
-chainlit
-faiss-cpu
 nltk
 spacy
 argon2-cffi
