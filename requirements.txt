@@ -26,3 +26,4 @@ chainlit
 faiss-cpu
 nltk
 spacy
+argon2-cffi

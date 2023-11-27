@@ -8,3 +8,4 @@ httpie
 pyjwt
 python-jose
 passlib
+argon2-cffi

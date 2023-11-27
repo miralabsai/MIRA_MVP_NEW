@@ -12,7 +12,7 @@ build/
 miramvp/
 
 /backend/.gitignore
-/backend/.env
+/ai_chat/Code/.env
 
 /node_modules
 
